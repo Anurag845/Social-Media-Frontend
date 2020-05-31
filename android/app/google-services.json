@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "614197198299",
+    "firebase_url": "https://lockdowndiaries-ae4e6.firebaseio.com",
+    "project_id": "lockdowndiaries-ae4e6",
+    "storage_bucket": "lockdowndiaries-ae4e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614197198299:android:61ccb8db53d9755d997bfe",
+        "android_client_info": {
+          "package_name": "com.ask.lockdown_diaries"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "614197198299-k8oa0k5vqvfqapldikaj2oe2qrrigg25.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdZaKRr5HhlykNovPIfc7qhblH3tbLakA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "614197198299-k8oa0k5vqvfqapldikaj2oe2qrrigg25.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
