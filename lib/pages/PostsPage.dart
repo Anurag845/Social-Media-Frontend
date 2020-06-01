@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:lockdown_diaries/models/CategoryModel.dart';
 import 'package:lockdown_diaries/models/GroupModel.dart';
 import 'package:lockdown_diaries/pages/AllCategoriesPage.dart';
+import 'package:lockdown_diaries/pages/CreatePost.dart';
 import 'package:lockdown_diaries/pages/SingleCategoryPage.dart';
 import 'package:lockdown_diaries/pages/SingleGroupPage.dart';
 import 'package:lockdown_diaries/providers/CategoryProvider.dart';
@@ -116,8 +117,10 @@ class _PostsPageState extends State<PostsPage> {
                                       child: InkWell(
                                     onTap: () {
                                       Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (_) => AddPost()));
+                                        MaterialPageRoute(
+                                          builder: (_) => CreatePost()
+                                        )
+                                      );
                                     },
                                     child: Container(
                                       margin: EdgeInsets.only(
