@@ -52,6 +52,7 @@ dependencies:
   modal_bottom_sheet: ^0.1.5
   image_cropper: ^1.2.1
   admob_flutter: "^1.0.0-beta.2"
+  pinch_zoom_image_updated: ^0.2.6
 
 flutter_icons:
   android: "launcher_icon"

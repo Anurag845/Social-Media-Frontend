@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pinch_zoom_image_updated/pinch_zoom_image_updated.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:lockdown_diaries/models/PostModel.dart';
@@ -232,7 +233,8 @@ class _PostsPageItemState extends State<PostsPageItem> {
                         )
                       );
                     },
-                    child: CachedNetworkImage(
+                    child: PinchZoomImage(
+                    image: CachedNetworkImage(
                       imageUrl: Constants.USERS_POSTS_IMAGES + widget._postModel.attachments[index].name,
                       placeholder: (c, d) {
                         return Center(
@@ -251,7 +253,7 @@ class _PostsPageItemState extends State<PostsPageItem> {
                         );
                       },
                       fit: BoxFit.contain,
-                    ),
+                    )),
                   ),
                   );
                 },
@@ -276,7 +278,7 @@ class _PostsPageItemState extends State<PostsPageItem> {
                       onTap: () {
                         /*if (widget._postModel.postOwnerId == userModel.userId) {
                           Fluttertoast.showToast(msg: 'can\'t like your post ');
-                        } 
+                        }
                         else {*/
                           if(!isBasy)
                             startAddLike();
@@ -379,7 +381,7 @@ class _PostsPageItemState extends State<PostsPageItem> {
         else {
           print("error is " + res['data']);
         }
-      } 
+      }
       else {
         var req = await http.post(
           '${Constants.SERVER_URL}like/delete',
