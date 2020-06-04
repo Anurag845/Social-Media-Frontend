@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lockdown_diaries/models/UserModel.dart';
+import 'package:lockdown_diaries/pages/Photo.dart';
 import 'package:lockdown_diaries/providers/AuthProvider.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:provider/provider.dart';
@@ -18,8 +20,12 @@ class _CreatePostState extends State<CreatePost> {
   @override
   void initState() {
     options.insert(0,ListTile(title: Text("Speak your mind"),onTap: () {},));
-    options.insert(1,ListTile(title: Text("Share this moment"),onTap: () {},));
-    options.insert(2,ListTile(title: Text("Share a memory"),onTap: () {},));
+    options.insert(1,ListTile(title: Text("Share this moment"),onTap: () {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => Photo(ImageSource.camera)));
+    },));
+    options.insert(2,ListTile(title: Text("Share a memory"),onTap: () {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => Photo(ImageSource.gallery)));
+    },));
     options.insert(3,ListTile(title: Text("Showcase your talent"),onTap: () {},));
     options.insert(4,ListTile(title: Text("I've been here"),onTap: () {},));
     options.insert(5,ListTile(title: Text("Start a story"),onTap: () {},));

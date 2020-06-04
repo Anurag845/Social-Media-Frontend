@@ -217,28 +217,29 @@ class _PostsPageItemState extends State<PostsPageItem> {
           ),
 
           widget._postModel.hasImg
-              ? ListView.builder(
-                physics: ClampingScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: widget._postModel.attachments.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => FullScreenImg(
-                            Constants.USERS_POSTS_IMAGES + widget._postModel.attachments[index].name
-                          )
+          ? ListView.builder(
+            physics: ClampingScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: widget._postModel.attachments.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => FullScreenImg(
+                          Constants.USERS_POSTS_IMAGES + widget._postModel.attachments[index].name
                         )
-                      );
-                    },
+                      )
+                    );
+                  },
+                  child: Center(
                     child: PinchZoomImage(
-                    image: CachedNetworkImage(
-                      imageUrl: Constants.USERS_POSTS_IMAGES + widget._postModel.attachments[index].name,
-                      placeholder: (c, d) {
-                        return Center(
-                          child: Container(
+                      image: CachedNetworkImage(
+                        imageUrl: Constants.USERS_POSTS_IMAGES + widget._postModel.attachments[index].name,
+                        placeholder: (c, d) {
+                          return Center(
+                            child: Container(
                               color: Colors.grey.shade100,
                               padding: EdgeInsets.only(
                                   top: 100,
@@ -249,16 +250,19 @@ class _PostsPageItemState extends State<PostsPageItem> {
                                       20),
                               child: CircularProgressIndicator(
                                 backgroundColor: Colors.green,
-                              )),
-                        );
-                      },
-                      fit: BoxFit.contain,
-                    )),
-                  ),
-                  );
-                },
-              )
-              : Container(),
+                              )
+                            ),
+                          );
+                        },
+                        fit: BoxFit.contain,
+                      )
+                    ),
+                  )
+                ),
+              );
+            },
+          )
+          : Container(),
 
           SizedBox(
             height: 10,
