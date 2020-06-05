@@ -23,25 +23,34 @@ class _PhotoState extends State<Photo> {
   String filePath;
   var image;
   String fileName;
+  bool empty = false;
 
   Future getImage() async {
     File imagefile;
     imagefile = await ImagePicker.pickImage(source: widget.imageSource);
-    String filename = basename(imagefile.path);
-    image = imageLib.decodeImage(imagefile.readAsBytesSync());
-    image = imageLib.copyResize(image, width: 600);
-    Directory tempDir = await getTemporaryDirectory();
-    String filepath = tempDir.path;
-    File tempImage = await imagefile.copy('$filepath/$filename');
-    setState(() {
-      imageFile = tempImage;
-      filePath = tempImage.path;
-      fileName = filename;
-    });
+    if(imagefile == null) {
+      setState(() {
+        empty = true;
+      });
+    }
+    else {
+      String filename = basename(imagefile.path);
+      image = imageLib.decodeImage(imagefile.readAsBytesSync());
+      image = imageLib.copyResize(image, width: 600);
+      Directory tempDir = await getTemporaryDirectory();
+      String filepath = tempDir.path;
+      File tempImage = await imagefile.copy('$filepath/$filename');
+      setState(() {
+        imageFile = tempImage;
+        filePath = tempImage.path;
+        fileName = filename;
+      });
+    }
   }
 
   @override
   void initState() {
+    empty = false;
     super.initState();
     getImage();
   }
@@ -91,7 +100,7 @@ class _PhotoState extends State<Photo> {
                   String filepath = tempDir.path;
                   File tempImage = await imageFile.copy('$filepath/$filename');
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => CropPage())
+                    MaterialPageRoute(builder: (context) => Cropper(tempImage.path))
                   );
                 }
               },

@@ -50,7 +50,7 @@ dependencies:
   flutter_sound: ^2.1.1
   file: ^5.0.4
   modal_bottom_sheet: ^0.1.5
-  image_cropper: ^1.2.1
+  image_cropper: ^1.2.2
   admob_flutter: "^1.0.0-beta.2"
   pinch_zoom_image_updated: ^0.2.6
   photofilters: ^1.0.5
