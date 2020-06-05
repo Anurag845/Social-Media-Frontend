@@ -91,7 +91,7 @@ class _PhotoState extends State<Photo> {
                   String filepath = tempDir.path;
                   File tempImage = await imageFile.copy('$filepath/$filename');
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => PhotoEditor(tempImage.path))
+                    MaterialPageRoute(builder: (context) => CropPage())
                   );
                 }
               },

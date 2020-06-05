@@ -55,6 +55,7 @@ dependencies:
   pinch_zoom_image_updated: ^0.2.6
   photofilters: ^1.0.5
   path_provider: ^1.6.10
+  crop: ^0.1.2
 
 flutter_icons:
   android: "launcher_icon"
