@@ -17,6 +17,7 @@ class PostModel with ChangeNotifier {
     int timeStamp;
     String createdAt;
     String img;
+    String displayName;
 
     PostModel(
         {   this.postId,
@@ -27,6 +28,7 @@ class PostModel with ChangeNotifier {
             this.hasImg,
             this.isUserLiked,
             this.userName,
+            this.displayName,
             this.postImg,
             this.timeStamp,
             this.img,
@@ -45,6 +47,7 @@ class PostModel with ChangeNotifier {
             attachments = (jsonDecode(map['attachments']) as List).map((i) => Attachment.fromJson(i)).toList(),
             timeStamp = map['timestamp'],
             userName = map['username'],
+            displayName = map['display_name'],
             img = map['profile_pic'];
 
     String toJson() {

@@ -1,7 +1,6 @@
 //created by Hatem Ragap
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lockdown_diaries/pages/Home.dart';
 import 'package:provider/provider.dart';
 import 'package:lockdown_diaries/models/UserModel.dart';
 import 'package:lockdown_diaries/pages/signup.dart';
@@ -35,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
       );
       var jsonResponse = await convert.jsonDecode(response.body);
       bool error = jsonResponse['error'];
-      if (error) {
+      if(error) {
         showDialog(
           context: context,
           builder: (context) {
@@ -59,12 +58,13 @@ class _LoginPageState extends State<LoginPage> {
         //make my model usable to all widgets
         Provider.of<AuthProvider>(context, listen: false).userModel = myModel;
 
-        saveData(
-            myModel.userId, myModel.username, myModel.email, passwordController.text);
+        saveData(myModel.userId, myModel.username, myModel.email, passwordController.text);
 
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) => Home()));
+        Navigator.of(context).pushNamed(Constants.HomePageRoute);
+
+        //Navigator.of(context).push(MaterialPageRoute(builder: (_) => Home()));
       }
-    } 
+    }
     catch (err) {
       showDialog(
           context: context,
@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
               ],
             );
           });
-    } 
+    }
     finally {
       setState(() {
         currentLoading = 0;
@@ -133,10 +133,10 @@ class _LoginPageState extends State<LoginPage> {
             height: 10,
           ),
           TextField(
-              controller: controller,
-              obscureText: isPassword,
-              decoration:
-                  InputDecoration(border: InputBorder.none, filled: true))
+            controller: controller,
+            obscureText: isPassword,
+            decoration: InputDecoration(border: InputBorder.none, filled: true)
+          )
         ],
       ),
     );
@@ -206,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
       text: TextSpan(
           text: 'V',
           style: GoogleFonts.portLligatSans(
-            textStyle: Theme.of(context).textTheme.display1,
+            textStyle: Theme.of(context).textTheme.headline4,
             fontSize: 30,
             fontWeight: FontWeight.w700,
             color: Color(0xffe46b10),

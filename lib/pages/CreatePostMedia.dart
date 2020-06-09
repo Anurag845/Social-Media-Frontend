@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,13 +9,18 @@ import 'package:lockdown_diaries/providers/AuthProvider.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:provider/provider.dart';
 
-class CreatePost extends StatefulWidget {
+class CreatePostWithMedia extends StatefulWidget {
+  final String filePath;
+
+  CreatePostWithMedia(this.filePath);
+
   @override
-  _CreatePostState createState() => _CreatePostState();
+  _CreatePostWithMediaState createState() => _CreatePostWithMediaState();
 }
 
-class _CreatePostState extends State<CreatePost> {
+class _CreatePostWithMediaState extends State<CreatePostWithMedia> {
   UserModel _userModel;
+  File mediaFile;
 
   List<ListTile> options = [];
 
@@ -21,12 +28,10 @@ class _CreatePostState extends State<CreatePost> {
   void initState() {
     options.insert(0,ListTile(title: Text("Speak your mind"),onTap: () {},));
     options.insert(1,ListTile(title: Text("Share this moment"),onTap: () {
-      Navigator.of(context).pushNamed(Constants.PhotoPageRoute, arguments: ImageSource.camera);
-      //Navigator.of(context).push(MaterialPageRoute(builder: (context) => Photo(ImageSource.camera)));
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => Photo(ImageSource.camera)));
     },));
     options.insert(2,ListTile(title: Text("Share a memory"),onTap: () {
-      Navigator.of(context).pushNamed(Constants.PhotoPageRoute, arguments: ImageSource.gallery);
-      //Navigator.of(context).push(MaterialPageRoute(builder: (context) => Photo(ImageSource.gallery)));
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => Photo(ImageSource.gallery)));
     },));
     options.insert(3,ListTile(title: Text("Showcase your talent"),onTap: () {},));
     options.insert(4,ListTile(title: Text("I've been here"),onTap: () {},));
@@ -34,6 +39,7 @@ class _CreatePostState extends State<CreatePost> {
     options.insert(6,ListTile(title: Text("My status today"),onTap: () {},));
     super.initState();
     _userModel = Provider.of<AuthProvider>(context, listen: false).userModel;
+    mediaFile = File(widget.filePath);
   }
 
   @override
@@ -106,18 +112,72 @@ class _CreatePostState extends State<CreatePost> {
                           child: TextField(
                             cursorColor: Colors.black,
                             decoration: InputDecoration.collapsed(
-                              hintText: "What's in your mind?",
+                              hintText: "Write something about this",
                               hintStyle: TextStyle(fontSize: 16.0)
                             ),/*InputDecoration(
                               border: new OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                               focusedBorder: new OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                             ),*/
                             keyboardType: TextInputType.multiline,
-                            minLines: 5,
+                            minLines: null,
                             maxLines: null,
                           ),
                         )
-                      )
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: mediaFile == null
+                        ? Container(
+                          child: Center(
+                            child: CircularProgressIndicator(backgroundColor: Colors.green),
+                          ),
+                        )
+                        : Container(
+                          child: Center(
+                            child: Image.file(mediaFile),
+                          ),
+                        )
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          //height: 300,
+                          padding: EdgeInsets.fromLTRB(15,0,15,0),
+                          child: TextField(
+                            cursorColor: Colors.black,
+                            decoration: InputDecoration.collapsed(
+                              hintText: "What is this about?",
+                              hintStyle: TextStyle(fontSize: 16.0)
+                            ),/*InputDecoration(
+                              border: new OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                              focusedBorder: new OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                            ),*/
+                            keyboardType: TextInputType.multiline,
+                            minLines: null,
+                            maxLines: null,
+                          ),
+                        )
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          //height: 300,
+                          padding: EdgeInsets.fromLTRB(15,0,15,0),
+                          child: TextField(
+                            cursorColor: Colors.black,
+                            decoration: InputDecoration.collapsed(
+                              hintText: "How did this make you feel?",
+                              hintStyle: TextStyle(fontSize: 16.0)
+                            ),/*InputDecoration(
+                              border: new OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                              focusedBorder: new OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
+                            ),*/
+                            keyboardType: TextInputType.multiline,
+                            minLines: null,
+                            maxLines: null,
+                          ),
+                        )
+                      ),
                     ],
                   ),
                 ),
@@ -127,7 +187,7 @@ class _CreatePostState extends State<CreatePost> {
           DraggableScrollableSheet(
             initialChildSize: 0.5,
             minChildSize: 0.1,
-            //maxChildSize: 1.0,
+            maxChildSize: 0.75,
             builder: (context, controller) {
               return Container(
                 decoration: BoxDecoration(

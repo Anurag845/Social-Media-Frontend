@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:lockdown_diaries/pages/PhotoEditor.dart';
+import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as imageLib;
@@ -122,9 +123,13 @@ class _PhotoState extends State<Photo> {
                     Directory tempDir = await getTemporaryDirectory();
                     String filepath = tempDir.path;
                     File tempImage = await imageFile.copy('$filepath/$filename');
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => Cropper(tempImage.path))
+                    Navigator.of(context).pushReplacementNamed(
+                      Constants.PhotoEditorPageRoute,
+                      arguments: tempImage.path
                     );
+                    /*Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => Cropper(tempImage.path))
+                    );*/
                   }
                 },
                 child: Text("NEXT"),

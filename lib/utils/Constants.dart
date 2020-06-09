@@ -15,6 +15,27 @@ class Constants {
   static const SOCKET_URL = 'http://$IP:$PORT';
 
 
+  static const HomePageRoute = 'home';
+  static const PostsPageRoute = 'landingpage';
+  static const AllGroupsPageRoute = 'allgroups';
+  static const AllCategoriesPageRoute = 'allcategories';
+  static const CreatePostPageRoute = 'createpost';
+  static const LoginPageRoute = 'login';
+  static const ChatMessagesPageRoute = 'chatmessages';
+  static const CommentsPageRoute = 'comments';
+  static const CreateGroupPageRoute = 'creategroup';
+  static const GroupChatsPageRoute = 'groupchats';
+  static const InviteMembersPageRoute = 'invitemembers';
+  static const NotificatitonPageRoute = 'notifications';
+  static const ProfilePageRoute = 'profilepage';
+  static const PersonalChatsPageRoute = 'personalchats';
+  static const PhotoPageRoute = 'photo';
+  static const PhotoEditorPageRoute = 'photoeditor';
+  static const SingleCategoryPageRoute = 'singlecategory';
+  static const SingleGroupPageRoute = 'singlegroup';
+  static const SplashScreenRoute = 'splashscreen';
+  static const WelcomePageRoute = 'welcome';
+
 
   // Go To https://apps.admob.com/ to get your app id and create banners and Interstitial
 

@@ -10,7 +10,6 @@ import 'package:lockdown_diaries/providers/AuthProvider.dart';
 import 'package:lockdown_diaries/providers/Theme_provider.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
 import 'dart:convert' as convert;
-import 'Home.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -33,11 +32,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
       if (email != null && password != null) {
         startLogin(email, password);
-      } 
+      }
       else {
-        Navigator.of(context).pushAndRemoveUntil(
+        Navigator.of(context).pushNamedAndRemoveUntil(Constants.WelcomePageRoute, (route) => false);
+        /*Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (BuildContext context) => WelcomePage()),
-            (Route<dynamic> route) => false);
+            (Route<dynamic> route) => false);*/
       }
     });
   }
@@ -55,21 +55,25 @@ class _SplashScreenState extends State<SplashScreen> {
       bool error = jsonResponse['error'];
 
       if (error) {
-        Navigator.of(context).pushAndRemoveUntil(
+        Navigator.of(context).pushNamedAndRemoveUntil(Constants.WelcomePageRoute, (route) => false);
+        /*Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (BuildContext context) => WelcomePage()),
-            (Route<dynamic> route) => false);
-      } 
+            (Route<dynamic> route) => false);*/
+      }
       else {
         var userData = jsonResponse['data'];
         UserModel myModel = UserModel.fromJson(userData);
         //make my model usable to all widgets
         Provider.of<AuthProvider>(context, listen: false).userModel = myModel;
 
-        Navigator.of(context).pushAndRemoveUntil(
+        print("Login done - going to Home");
+        Navigator.of(context).pushNamedAndRemoveUntil(Constants.HomePageRoute, (route) => false);
+
+        /*Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (BuildContext context) => Home()),
-            (Route<dynamic> route) => false);
+            (Route<dynamic> route) => false);*/
       }
-    } 
+    }
     catch (err) {
       //case error (No internet connection) move to WelcomePage
       Navigator.of(context).pushAndRemoveUntil(
@@ -88,18 +92,21 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Container(
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(5)),
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                      color: Colors.grey.shade200,
-                      offset: Offset(2, 4),
-                      blurRadius: 5,
-                      spreadRadius: 2)
-                ],
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Color(0xfffbb448), Color(0xffe46b10)])),
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: Colors.grey.shade200,
+                  offset: Offset(2, 4),
+                  blurRadius: 5,
+                  spreadRadius: 2
+                )
+              ],
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xfffbb448), Color(0xffe46b10)]
+              )
+            ),
             width: MediaQuery.of(context).size.width,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

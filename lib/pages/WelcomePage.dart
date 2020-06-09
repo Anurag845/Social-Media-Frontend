@@ -1,6 +1,7 @@
 //created by Hatem Ragap
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:provider/provider.dart';
 import 'package:lockdown_diaries/pages/LoginPage.dart';
 import 'package:lockdown_diaries/pages/signup.dart';
@@ -19,23 +20,25 @@ class _WelcomePageState extends State<WelcomePage> {
   Widget _submitButton() {
     return InkWell(
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
+        Navigator.of(context).pushNamed(Constants.LoginPageRoute);
+        /*Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));*/
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.symmetric(vertical: 13),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(5)),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                  color: Color(0xffdf8e33).withAlpha(100),
-                  offset: Offset(2, 4),
-                  blurRadius: 8,
-                  spreadRadius: 2)
-            ],
-            color: Colors.white),
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: Color(0xffdf8e33).withAlpha(100),
+              offset: Offset(2, 4),
+              blurRadius: 8,
+              spreadRadius: 2)
+          ],
+          color: Colors.white
+        ),
         child: Text(
           'Login',
           style: TextStyle(fontSize: 20, color: Color(0xfff7892b)),
@@ -72,7 +75,7 @@ class _WelcomePageState extends State<WelcomePage> {
       text: TextSpan(
           text: 'V',
           style: GoogleFonts.portLligatSans(
-            textStyle: Theme.of(context).textTheme.display1,
+            textStyle: Theme.of(context).textTheme.headline4,
             fontSize: 30,
             fontWeight: FontWeight.w700,
             color: Colors.white,

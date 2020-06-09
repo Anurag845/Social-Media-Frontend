@@ -10,7 +10,7 @@ import 'package:lockdown_diaries/providers/GroupProvider.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:lockdown_diaries/pages/SplashScreen.dart';
-
+import 'package:lockdown_diaries/utils/Router.dart' as router;
 import 'package:lockdown_diaries/providers/AppBarProvider.dart';
 import 'package:lockdown_diaries/providers/AuthProvider.dart';
 import 'package:lockdown_diaries/providers/ConverstionProvider.dart';
@@ -70,17 +70,20 @@ class MyApp extends StatelessWidget {
     //by default listen is true
     final themeProvider = Provider.of<ThemeProvider>(context, listen: true);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: themeProvider.getThemeData.backgroundColor,
-        statusBarIconBrightness:
-            themeProvider.getThemeData.brightness == Brightness.dark
-                ? Brightness.light
-                : Brightness.dark));
+      statusBarColor: themeProvider.getThemeData.backgroundColor,
+      statusBarIconBrightness:
+      themeProvider.getThemeData.brightness == Brightness.dark
+        ? Brightness.light
+        : Brightness.dark
+      )
+    );
     return MaterialApp(
-
       theme: themeProvider.getThemeData,
       home: SplashScreen(),
       title: 'v chat app',
       debugShowCheckedModeBanner: false,
+      onGenerateRoute: router.generateRoute,
+      initialRoute: Constants.SplashScreenRoute
     );
   }
 }
