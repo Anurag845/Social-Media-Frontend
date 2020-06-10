@@ -237,7 +237,7 @@ class _AddPostState extends State<AddPost> {
     String _url = "${Constants.SERVER_URL}post/create";
     Fluttertoast.showToast(msg: 'posting ...');
     if (file != null) {
-      var stream = new http.ByteStream(DelegatingStream.typed(file.openRead()));
+      var stream = new http.ByteStream(file.openRead());
       var length = await file.length();
       var uri = Uri.parse(_url);
       var request = new http.MultipartRequest("POST", uri);
@@ -253,7 +253,7 @@ class _AddPostState extends State<AddPost> {
         HttpHeaders.contentTypeHeader: "application/json",
         HttpHeaders.authorizationHeader: "Bearer ${_userModel.accessToken}"
       });
-      
+
       var response = await request.send();
 
       response.stream.transform(convert.utf8.decoder).listen((value) async {
@@ -266,7 +266,7 @@ class _AddPostState extends State<AddPost> {
             Fluttertoast.showToast(msg: ' done ...');
             postDataController.clear();
             Navigator.pop(context);
-          } 
+          }
           else {
             print('error! ' + jsonResponse);
 
@@ -279,7 +279,7 @@ class _AddPostState extends State<AddPost> {
                 textColor: Colors.white,
                 fontSize: 16.0);
           }
-        } 
+        }
         catch (err) {
           print(err);
           print(value);
@@ -291,14 +291,14 @@ class _AddPostState extends State<AddPost> {
               backgroundColor: Colors.red,
               textColor: Colors.white,
               fontSize: 16.0);
-        } 
+        }
         finally {
           setState(() {
             currentLoading = 0;
           });
         }
       });
-    } 
+    }
     else {
       try {
         var req = await http.post(
@@ -322,11 +322,11 @@ class _AddPostState extends State<AddPost> {
           postDataController.clear();
           Navigator.pop(context);
         }
-      } 
+      }
       catch (err) {
         print(err);
         Fluttertoast.showToast(msg: ' error while upload ... $err');
-      } 
+      }
       finally {
         setState(() {
           currentLoading = 0;

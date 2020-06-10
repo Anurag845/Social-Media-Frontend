@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:lockdown_diaries/pages/PhotoEditor.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
@@ -36,6 +35,7 @@ class _PhotoState extends State<Photo> {
     }
     else {
       String filename = path.basename(imagefile.path);
+      print("File name from imagepicker:- " + filename);
       image = imageLib.decodeImage(imagefile.readAsBytesSync());
       image = imageLib.copyResize(image, width: 600);
       Directory tempDir = await getTemporaryDirectory();
@@ -44,6 +44,7 @@ class _PhotoState extends State<Photo> {
       setState(() {
         imageFile = tempImage;
         filePath = tempImage.path;
+        //imageFile = imagefile;
         fileName = filename;
       });
     }
@@ -120,6 +121,7 @@ class _PhotoState extends State<Photo> {
                   if (imagefile != null && imagefile.containsKey('image_filtered')) {
                     imageFile = imagefile['image_filtered'];
                     String filename = path.basename(imageFile.path);
+                    print("Filename from photo filter" + filename);
                     Directory tempDir = await getTemporaryDirectory();
                     String filepath = tempDir.path;
                     File tempImage = await imageFile.copy('$filepath/$filename');

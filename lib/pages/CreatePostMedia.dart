@@ -1,5 +1,8 @@
 import 'dart:io';
-
+import 'package:dio/dio.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,8 +11,11 @@ import 'package:lockdown_diaries/pages/Photo.dart';
 import 'package:lockdown_diaries/providers/AuthProvider.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:provider/provider.dart';
+import 'package:path/path.dart' as path;
+import 'dart:convert' as convert;
 
 class CreatePostWithMedia extends StatefulWidget {
+  //final File file;
   final String filePath;
 
   CreatePostWithMedia(this.filePath);
@@ -21,7 +27,7 @@ class CreatePostWithMedia extends StatefulWidget {
 class _CreatePostWithMediaState extends State<CreatePostWithMedia> {
   UserModel _userModel;
   File mediaFile;
-
+  TextEditingController postTextController = TextEditingController();
   List<ListTile> options = [];
 
   @override
@@ -40,6 +46,71 @@ class _CreatePostWithMediaState extends State<CreatePostWithMedia> {
     super.initState();
     _userModel = Provider.of<AuthProvider>(context, listen: false).userModel;
     mediaFile = File(widget.filePath);
+    print("Filepath inside create post " + (mediaFile.path));
+  }
+
+  uploadFile() async {
+    try{
+      var stream = new http.ByteStream(mediaFile.openRead().cast());
+      var length = await mediaFile.length();
+      var uri = Uri.parse("${Constants.SERVER_URL}post/create");
+      var request = http.MultipartRequest('POST', uri);
+      var multipartFile = new http.MultipartFile('attachments', stream, length,
+          filename: path.basename(mediaFile.path));
+      request.files.add(multipartFile);
+      request.fields.addAll({
+        "user_id": _userModel.userId,
+        "descr": '${postTextController.text}',
+      });
+      request.headers.addAll({
+        HttpHeaders.contentTypeHeader: "application/json",
+        HttpHeaders.authorizationHeader: "Bearer ${_userModel.accessToken}"
+      });
+
+      var response = await request.send();
+
+      response.stream.transform(convert.utf8.decoder).listen((value) async {
+        try {
+          var jsonResponse = await convert.jsonDecode(value);
+          bool error = jsonResponse['error'];
+          if (error == false) {
+            /*Provider.of<PostProvider>(context, listen: false)
+                .startGetPostsData(_userModel.userId,_userModel.accessToken);
+            Fluttertoast.showToast(msg: ' done ...');
+            postDataController.clear();*/
+            Fluttertoast.showToast(msg: ' done ...');
+            Navigator.pop(context);
+          }
+          else {
+            print('error! ' + jsonResponse);
+
+            Fluttertoast.showToast(
+                msg: "unkown error !" + jsonResponse,
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIos: 1,
+                backgroundColor: Colors.red,
+                textColor: Colors.white,
+                fontSize: 16.0);
+          }
+        }
+        catch (err) {
+          print(err);
+          print(value);
+          Fluttertoast.showToast(
+              msg: "unkown error ! check your connection",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIos: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
+        }
+      });
+    }
+    catch(error) {
+      print(error);
+    }
   }
 
   @override
@@ -54,9 +125,7 @@ class _CreatePostWithMediaState extends State<CreatePostWithMedia> {
               padding: EdgeInsets.all(5),
               child: InkWell(
                 child: Text("POST"),
-                onTap: () {
-
-                },
+                onTap: uploadFile
               )
             )
           )
@@ -110,6 +179,7 @@ class _CreatePostWithMediaState extends State<CreatePostWithMedia> {
                           //height: 300,
                           padding: EdgeInsets.fromLTRB(15,0,15,0),
                           child: TextField(
+                            controller: postTextController,
                             cursorColor: Colors.black,
                             decoration: InputDecoration.collapsed(
                               hintText: "Write something about this",

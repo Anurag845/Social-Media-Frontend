@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,7 +7,6 @@ import 'package:lockdown_diaries/providers/AuthProvider.dart';
 import 'package:lockdown_diaries/providers/GroupProvider.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:provider/provider.dart';
-import 'package:async/async.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:path/path.dart' as Path;
@@ -278,7 +276,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     }
     else {
       String _url = "${Constants.SERVER_URL}groups/createGroup";
-      var stream = new http.ByteStream(DelegatingStream.typed(groupImage.openRead()));
+      var stream = new http.ByteStream(groupImage.openRead().cast());
       var length = await groupImage.length();
       var uri = Uri.parse(_url);
       var request = new http.MultipartRequest("POST", uri);

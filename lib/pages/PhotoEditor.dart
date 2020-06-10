@@ -375,7 +375,7 @@ class _CropperState extends State<Cropper> {
               FlatButton(
                 onPressed: () async {
                   String filename = path.basename(imageFile.path);
-                  Directory tempDir = await getTemporaryDirectory();
+                  Directory tempDir = await getApplicationDocumentsDirectory();
                   String filepath = tempDir.path;
                   File tempFile = await imageFile.copy('$filepath/$filename');
                   filePath = tempFile.path;
