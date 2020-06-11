@@ -300,8 +300,7 @@ class _PostsPageState extends State<PostsPage> {
                                                                               categories[i])));
                                                             },
                                                             child: Wrap(
-                                                              children: <
-                                                                  Widget>[
+                                                              children: <Widget>[
                                                                 Align(
                                                                     alignment:
                                                                         Alignment

@@ -1,14 +1,16 @@
 import 'dart:io';
-import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lockdown_diaries/models/CategoryModel.dart';
 import 'package:lockdown_diaries/models/UserModel.dart';
+import 'package:lockdown_diaries/pages/ChipPage.dart';
 import 'package:lockdown_diaries/pages/Photo.dart';
 import 'package:lockdown_diaries/providers/AuthProvider.dart';
+import 'package:lockdown_diaries/providers/CategoryProvider.dart';
+import 'package:lockdown_diaries/providers/PostProvider.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
@@ -28,7 +30,10 @@ class _CreatePostWithMediaState extends State<CreatePostWithMedia> {
   UserModel _userModel;
   File mediaFile;
   TextEditingController postTextController = TextEditingController();
+  CategoryModel category;
   List<ListTile> options = [];
+
+  List<Chip> categories = [];
 
   @override
   void initState() {
@@ -46,7 +51,8 @@ class _CreatePostWithMediaState extends State<CreatePostWithMedia> {
     super.initState();
     _userModel = Provider.of<AuthProvider>(context, listen: false).userModel;
     mediaFile = File(widget.filePath);
-    print("Filepath inside create post " + (mediaFile.path));
+    Provider.of<CategoryProvider>(context, listen: false).
+        getAllCategories(_userModel.accessToken);
   }
 
   uploadFile() async {
@@ -74,10 +80,10 @@ class _CreatePostWithMediaState extends State<CreatePostWithMedia> {
           var jsonResponse = await convert.jsonDecode(value);
           bool error = jsonResponse['error'];
           if (error == false) {
-            /*Provider.of<PostProvider>(context, listen: false)
+            Provider.of<PostProvider>(context, listen: false)
                 .startGetPostsData(_userModel.userId,_userModel.accessToken);
             Fluttertoast.showToast(msg: ' done ...');
-            postDataController.clear();*/
+            postTextController.clear();
             Fluttertoast.showToast(msg: ' done ...');
             Navigator.pop(context);
           }
@@ -85,26 +91,28 @@ class _CreatePostWithMediaState extends State<CreatePostWithMedia> {
             print('error! ' + jsonResponse);
 
             Fluttertoast.showToast(
-                msg: "unkown error !" + jsonResponse,
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIos: 1,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);
+              msg: "unkown error !" + jsonResponse,
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIos: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0
+            );
           }
         }
         catch (err) {
           print(err);
           print(value);
           Fluttertoast.showToast(
-              msg: "unkown error ! check your connection",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIos: 1,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0);
+            msg: "unkown error ! check your connection",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIos: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+          );
         }
       });
     }
@@ -211,21 +219,25 @@ class _CreatePostWithMediaState extends State<CreatePostWithMedia> {
                       Align(
                         alignment: Alignment.center,
                         child: Container(
-                          //height: 300,
-                          padding: EdgeInsets.fromLTRB(15,0,15,0),
-                          child: TextField(
-                            cursorColor: Colors.black,
-                            decoration: InputDecoration.collapsed(
-                              hintText: "What is this about?",
-                              hintStyle: TextStyle(fontSize: 16.0)
-                            ),/*InputDecoration(
-                              border: new OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-                              focusedBorder: new OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
-                            ),*/
-                            keyboardType: TextInputType.multiline,
-                            minLines: null,
-                            maxLines: null,
-                          ),
+                          padding: EdgeInsets.fromLTRB(25,25,25,25),
+                          child: InkWell(
+                            child: Text(
+                              category == null
+                              ? "What is this about?"
+                              : category.categoryName,
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            onTap: () async {
+                              final cat = await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ChoiceChipDisplay()
+                                )
+                              );
+                              setState(() {
+                                category = cat;
+                              });
+                            },
+                          )
                         )
                       ),
                       Align(

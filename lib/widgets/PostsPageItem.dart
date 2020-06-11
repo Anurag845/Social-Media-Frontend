@@ -1,6 +1,4 @@
-//created by Hatem Ragap
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -391,20 +389,22 @@ class _PostsPageItemState extends State<PostsPageItem> {
         } else {
           print("error is " + res['data']);
         }
-      } else {
+      }
+      else {
         var req = await http.post('${Constants.SERVER_URL}like/delete',
-            headers: {
-              HttpHeaders.contentTypeHeader: "application/json",
-              HttpHeaders.authorizationHeader:
-                  "Bearer ${widget._userModel.accessToken}"
-            },
-            body: convert.jsonEncode({
-              'user_id': '${widget._userModel.userId}',
-              'entity_id': '${widget._postModel.postId}',
-              'entity_type': 'post',
-              'username': '${widget._userModel.username}',
-              'post_owner_id': '${widget._postModel.postOwnerId}'
-            }));
+          headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+            HttpHeaders.authorizationHeader:
+                "Bearer ${widget._userModel.accessToken}"
+          },
+          body: convert.jsonEncode({
+            'user_id': '${widget._userModel.userId}',
+            'entity_id': '${widget._postModel.postId}',
+            'entity_type': 'post',
+            'username': '${widget._userModel.username}',
+            'post_owner_id': '${widget._postModel.postOwnerId}'
+          })
+        );
         var res = convert.jsonDecode(req.body);
         if (!res['error']) {
           setState(() {
