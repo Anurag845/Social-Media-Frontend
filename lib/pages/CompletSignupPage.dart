@@ -169,7 +169,7 @@ class _CompleteSignUpPageState extends State<CompleteSignUpPage> {
   void startUploadImgAndBio() async {
     String _url = '${Constants.SERVER_URL}user/img';
 
-    var stream = new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+    var stream = new http.ByteStream(imageFile.openRead().cast());
     var length = await imageFile.length();
     var uri = Uri.parse(_url);
     var request = new http.MultipartRequest("POST", uri);

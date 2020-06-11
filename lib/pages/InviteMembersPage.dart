@@ -146,7 +146,7 @@ class _InviteMembersPageState extends State<InviteMembersPage> {
                               setState(() {
                                 sendingRequest = true;
                               });
-                              sendInvite(_inviteList[i].userId);
+                              sendInvite(_inviteList[i].userId,i);
                             },
                             /*enable[i]
                             ? () {
@@ -181,7 +181,8 @@ class _InviteMembersPageState extends State<InviteMembersPage> {
     );
   }
 
-  sendInvite(String invited) async {
+  sendInvite(String invited, int i) async {
+    _inviteList.removeAt(i);
     var req = await http.post(
       "${Constants.SERVER_URL}groups/invite",
       headers: {
@@ -196,14 +197,18 @@ class _InviteMembersPageState extends State<InviteMembersPage> {
       })
     );
     var convertedData = convert.jsonDecode(req.body);
-    if(!convertedData["error"]) {
-      setState(() {
-        sendingRequest = false;
-      });
-    }
-    else {
-      print(convertedData["data"]);
-    }
+    Future.delayed(Duration(milliseconds: 3000), () {
+      if(!convertedData["error"]) {
+        setState(() {
+          sendingRequest = false;
+          Provider.of<GroupProvider>(context, listen: false)
+              .getInviteList(_userModel.userId, widget.groupId, _userModel.accessToken);
+        });
+      }
+      else {
+        print(convertedData["data"]);
+      }
+    });
   }
 
   /*filterList(String query) {

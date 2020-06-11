@@ -256,7 +256,7 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
                           )
                       ),
                     );
-                  } 
+                  }
                   else {
                     //peer message
                     return InkWell(
@@ -429,7 +429,7 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
             onPressed: () {
               if (message == '') {
                 Fluttertoast.showToast(msg: 'cant send empty message');
-              } 
+              }
               else {
                 _sendMessage();
               }
@@ -462,7 +462,7 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
           )
         );
       });
-    } 
+    }
     catch (err) {
       print('error is $err');
     }
@@ -511,7 +511,7 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
         );
       });
     }
-    
+
     _txtController.clear();
     _scrollToLast();
   }
@@ -560,7 +560,7 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
         HttpHeaders.authorizationHeader: "Bearer ${_userModel.accessToken}"
       },
       body: convert.jsonEncode({
-        'conversation_id': '${widget.chatInfo.conversationId}', 
+        'conversation_id': '${widget.chatInfo.conversationId}',
         'user_id': '${_userModel.userId}'
       })
     );
@@ -585,7 +585,7 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
         temp = null;
         _refreshController.loadComplete();
       });
-    } 
+    }
     else {
       //load more done
       _refreshController.loadNoData();
@@ -645,7 +645,7 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
   }
 
   void startSendImageMessage(var file, var _url) async {
-    var stream = new http.ByteStream(DelegatingStream.typed(file.openRead()));
+    var stream = new http.ByteStream(file.openRead().cast());
     var length = await file.length();
     var uri = Uri.parse(_url);
     var request = new http.MultipartRequest("POST", uri);
@@ -664,11 +664,11 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
         if (error == false) {
           String imageName = jsonResponse['data'];
           _sendMessage(type: 1, image: imageName);
-        } 
+        }
         else {
           print('error! ' + jsonResponse);
         }
-      } 
+      }
       catch (err) {
         print(err);
       }

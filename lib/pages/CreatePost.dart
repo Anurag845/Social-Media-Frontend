@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lockdown_diaries/models/UserModel.dart';
 import 'package:lockdown_diaries/pages/Photo.dart';
+import 'package:lockdown_diaries/pages/Video.dart';
 import 'package:lockdown_diaries/providers/AuthProvider.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +29,9 @@ class _CreatePostState extends State<CreatePost> {
       Navigator.of(context).pushNamed(Constants.PhotoPageRoute, arguments: ImageSource.gallery);
       //Navigator.of(context).push(MaterialPageRoute(builder: (context) => Photo(ImageSource.gallery)));
     },));
-    options.insert(3,ListTile(title: Text("Showcase your talent"),onTap: () {},));
+    options.insert(3,ListTile(title: Text("Showcase your talent"),onTap: () {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyHomePage()));
+    },));
     options.insert(4,ListTile(title: Text("I've been here"),onTap: () {},));
     options.insert(5,ListTile(title: Text("Start a story"),onTap: () {},));
     options.insert(6,ListTile(title: Text("My status today"),onTap: () {},));
