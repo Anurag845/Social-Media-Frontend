@@ -8,26 +8,24 @@ import 'package:image/image.dart' as imageLib;
 import 'package:image_picker/image_picker.dart';
 import 'package:photofilters/photofilters.dart';
 
-class Photo extends StatefulWidget {
-  final ImageSource imageSource;
-
-  Photo(this.imageSource);
+class Memory extends StatefulWidget {
 
   @override
-  _PhotoState createState() => _PhotoState();
+  _MemoryState createState() => _MemoryState();
 }
 
-class _PhotoState extends State<Photo> {
+class _MemoryState extends State<Memory> {
 
   File imageFile;
   String filePath;
   var image;
   String fileName;
-  bool empty = false;
+  bool empty = true;
+  String fileType = "";
 
   Future getImage() async {
     File imagefile;
-    imagefile = await ImagePicker.pickImage(source: widget.imageSource);
+    imagefile = await ImagePicker.pickImage(source: ImageSource.gallery);
     if(imagefile == null) {
       setState(() {
         empty = true;
@@ -42,9 +40,10 @@ class _PhotoState extends State<Photo> {
       String filepath = tempDir.path;
       File tempImage = await imagefile.copy('$filepath/$filename');
       setState(() {
+        empty = false;
+        fileType = "image";
         imageFile = tempImage;
         filePath = tempImage.path;
-        //imageFile = imagefile;
         fileName = filename;
       });
     }
@@ -52,9 +51,9 @@ class _PhotoState extends State<Photo> {
 
   @override
   void initState() {
-    empty = false;
+    empty = true;
     super.initState();
-    getImage();
+    //getImage();
   }
 
   Future<bool> _onWillPop() async {
@@ -87,7 +86,48 @@ class _PhotoState extends State<Photo> {
           title: Text("Share this moment"),
         ),
         body: Center(
-          child: new Container(
+          child: empty
+          ? Container(
+            //color: Colors.deepOrange,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                RaisedButton(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  color: Colors.cyan[200],
+                  onPressed: () {
+                    getImage();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Icon(
+                        Icons.photo
+                      ),
+                      Text("Photo")
+                    ],
+                  ),
+                ),
+                RaisedButton(
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  color: Colors.cyan[200],
+                  onPressed: () {},
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Icon(
+                        Icons.video_call
+                      ),
+                      Text("Video")
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )
+          : fileType == "image"
+          ? Container(
             child: imageFile == null
             ? Center(
                 child: CircularProgressIndicator(
@@ -95,16 +135,20 @@ class _PhotoState extends State<Photo> {
                 ),
               )
             : Image.file(imageFile),
-          ),
+          )
+          : Container()
         ),
-        bottomNavigationBar: BottomAppBar(
+        bottomNavigationBar: empty
+        ? Container()
+        : BottomAppBar(
           color: Colors.white,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             //textDirection: TextDirection.,
             children: <Widget>[
               FlatButton(
-                onPressed: () async {
+                onPressed: fileType == "image"
+                  ? () async {
                   Map imagefile = await Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -118,7 +162,7 @@ class _PhotoState extends State<Photo> {
                       ),
                     ),
                   );
-                  if (imagefile != null && imagefile.containsKey('image_filtered')) {
+                  if(imagefile != null && imagefile.containsKey('image_filtered')) {
                     imageFile = imagefile['image_filtered'];
                     String filename = path.basename(imageFile.path);
                     print("Filename from photo filter" + filename);
@@ -133,6 +177,9 @@ class _PhotoState extends State<Photo> {
                       MaterialPageRoute(builder: (context) => Cropper(tempImage.path))
                     );*/
                   }
+                }
+                : () {
+
                 },
                 child: Text("NEXT"),
               )

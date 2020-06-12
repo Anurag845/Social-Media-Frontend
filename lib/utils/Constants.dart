@@ -29,7 +29,8 @@ class Constants {
   static const NotificatitonPageRoute = 'notifications';
   static const ProfilePageRoute = 'profilepage';
   static const PersonalChatsPageRoute = 'personalchats';
-  static const PhotoPageRoute = 'photo';
+  static const MomentPageRoute = 'sharemoment';
+  static const MemoryPageRoute = 'sharememory';
   static const PhotoEditorPageRoute = 'photoeditor';
   static const SingleCategoryPageRoute = 'singlecategory';
   static const SingleGroupPageRoute = 'singlegroup';

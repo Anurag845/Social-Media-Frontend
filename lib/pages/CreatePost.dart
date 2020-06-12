@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/pages/Photo.dart';
 import 'package:lockdown_diaries/pages/Video.dart';
 import 'package:lockdown_diaries/providers/AuthProvider.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
@@ -22,11 +21,11 @@ class _CreatePostState extends State<CreatePost> {
   void initState() {
     options.insert(0,ListTile(title: Text("Speak your mind"),onTap: () {},));
     options.insert(1,ListTile(title: Text("Share this moment"),onTap: () {
-      Navigator.of(context).pushNamed(Constants.PhotoPageRoute, arguments: ImageSource.camera);
+      Navigator.of(context).pushNamed(Constants.MomentPageRoute);
       //Navigator.of(context).push(MaterialPageRoute(builder: (context) => Photo(ImageSource.camera)));
     },));
     options.insert(2,ListTile(title: Text("Share a memory"),onTap: () {
-      Navigator.of(context).pushNamed(Constants.PhotoPageRoute, arguments: ImageSource.gallery);
+      Navigator.of(context).pushNamed(Constants.MemoryPageRoute);
       //Navigator.of(context).push(MaterialPageRoute(builder: (context) => Photo(ImageSource.gallery)));
     },));
     options.insert(3,ListTile(title: Text("Showcase your talent"),onTap: () {
