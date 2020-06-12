@@ -83,6 +83,8 @@ class _PostsPageState extends State<PostsPage> {
                       controller: _controller,
                       shrinkWrap: true,
                       children: <Widget>[
+
+                        /*
                         // Create Post
                         Container(
                           width: MediaQuery.of(context).size.width,
@@ -175,7 +177,7 @@ class _PostsPageState extends State<PostsPage> {
                             ],
                           ),
                         ),
-
+*/
                         ExpansionTile(
                             title: Text('Looking for focused content?'),
                             children: <Widget>[
@@ -300,7 +302,8 @@ class _PostsPageState extends State<PostsPage> {
                                                                               categories[i])));
                                                             },
                                                             child: Wrap(
-                                                              children: <Widget>[
+                                                              children: <
+                                                                  Widget>[
                                                                 Align(
                                                                     alignment:
                                                                         Alignment

@@ -21,6 +21,7 @@ class _MomentState extends State<Moment> {
   var image;
   String fileName;
   bool empty = true;
+  bool loading = false;
 
   getImage() async {
     File imagefile;
@@ -40,6 +41,7 @@ class _MomentState extends State<Moment> {
       File tempImage = await imagefile.copy('$filepath/$filename');
       setState(() {
         empty = false;
+        loading = true;
         imageFile = tempImage;
         filePath = tempImage.path;
         fileName = filename;
@@ -50,6 +52,7 @@ class _MomentState extends State<Moment> {
   @override
   void initState() {
     empty = true;
+    loading = false;
     super.initState();
     getImage();
   }
@@ -83,23 +86,20 @@ class _MomentState extends State<Moment> {
         appBar: AppBar(
           title: Text("Share this moment"),
         ),
-        body: empty
-        ? Center(
-          child: FlatButton(
-            onPressed: getImage(),
-            child: Text("Select Image"),
-          ),
-        )
-        : Center(
-          child: new Container(
+        body: Center(
+          child: empty
+          ? Container(
+            child: FlatButton(
+              color: Colors.cyan[200],
+              onPressed: getImage,
+              child: Text("Select Image"),
+            ),
+          )
+          : Container(
             child: imageFile == null
-            ? Center(
-                child: CircularProgressIndicator(
-                  backgroundColor: Colors.green,
-                ),
-              )
+            ? CircularProgressIndicator()
             : Image.file(imageFile),
-          ),
+          )
         ),
         bottomNavigationBar: BottomAppBar(
           color: Colors.white,

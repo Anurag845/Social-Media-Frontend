@@ -1,5 +1,3 @@
-//created by Hatem Ragap
-
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -29,6 +27,7 @@ import 'Notifictionpage.dart';
 import 'PostsPage.dart';
 import 'Settings.dart';
 import 'package:http/http.dart' as http;
+import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -48,16 +47,18 @@ class _HomeState extends State<Home> {
       new FlutterLocalNotificationsPlugin();
   List<Widget> pages = [];
 
+  List<Widget> options = [];
+
+  SolidController _controller = SolidController();
 
   @override
   void initState() {
-
     _userModel = Provider.of<AuthProvider>(context, listen: false).userModel;
 
     //print("User id obtained from UserModel is "+_userModel.userId);
 
     //Provider.of<ConversionProvider>(context, listen: false)
-        //.initConversionSocketAndRequestChats(_userModel);
+    //.initConversionSocketAndRequestChats(_userModel);
 
     Provider.of<PostProvider>(context, listen: false)
         .startGetPostsData(_userModel.userId, _userModel.accessToken);
@@ -66,13 +67,71 @@ class _HomeState extends State<Home> {
         .getAllCategories(_userModel.accessToken);
 
     Provider.of<GroupProvider>(context, listen: false)
-      .getAllUserGroups(_userModel.userId, _userModel.accessToken);
+        .getAllUserGroups(_userModel.userId, _userModel.accessToken);
 
     pages.add(PostsPage());
     pages.add(NotificationPage());
     pages.add(GroupChatsPage(_userModel));
     pages.add(PersonalChatsPage());
     pages.add(Settings());
+
+    options.insert(
+        0,
+        ListTile(
+          leading: Icon(Icons.bubble_chart, color: Colors.red[600], size: 32),
+          title: Text("Speak your mind"),
+          onTap: () {},
+        ));
+    options.insert(
+        1,
+        ListTile(
+          leading: Icon(Icons.camera, color: Colors.blue[600], size: 32),
+          title: Text("Share this moment"),
+          onTap: () {
+            Navigator.of(context).pushNamed(Constants.MomentPageRoute);
+            //Navigator.of(context).push(MaterialPageRoute(builder: (context) => Photo(ImageSource.camera)));
+          },
+        ));
+    options.insert(
+        2,
+        ListTile(
+          leading: Icon(Icons.camera_roll, color: Colors.orange[600], size: 32),
+          title: Text("Share a memory"),
+          onTap: () {
+            Navigator.of(context).pushNamed(Constants.MemoryPageRoute);
+            //Navigator.of(context).push(MaterialPageRoute(builder: (context) => Photo(ImageSource.gallery)));
+          },
+        ));
+    options.insert(
+        3,
+        ListTile(
+          leading:
+              Icon(Icons.directions_run, color: Colors.purple[600], size: 32),
+          title: Text("Showcase your talent"),
+          onTap: () {},
+        ));
+    options.insert(
+        4,
+        ListTile(
+          leading: Icon(Icons.place, color: Colors.pink[600], size: 32),
+          title: Text("I've been here"),
+          onTap: () {},
+        ));
+    options.insert(
+        5,
+        ListTile(
+          leading: Icon(Icons.camera_front, color: Colors.green, size: 32),
+          title: Text("Start a story"),
+          onTap: () {},
+        ));
+    options.insert(
+        6,
+        ListTile(
+          leading: Icon(Icons.settings_input_svideo,
+              color: Colors.teal[800], size: 32),
+          title: Text("My status today"),
+          onTap: () {},
+        ));
 
     super.initState();
     initSocket();
@@ -87,16 +146,46 @@ class _HomeState extends State<Home> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        backgroundColor: themeProvider.getThemeData.backgroundColor,
-        appBar: HomeAppBar(),
-        body: SafeArea(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: pages[index],
+          backgroundColor: themeProvider.getThemeData.backgroundColor,
+          appBar: HomeAppBar(),
+          body: SafeArea(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: pages[index],
+            ),
           ),
-        )
-      ),
+          bottomSheet: SingleChildScrollView(
+            child: SolidBottomSheet(
+                controller: _controller,
+                draggableBody: true,
+                maxHeight: 420,
+                headerBar: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.blue[600],
+                      borderRadius: BorderRadius.only(
+                          topLeft: const Radius.circular(10.0),
+                          topRight: const Radius.circular(10.0))),
+                  child: Center(
+                    child: Text(
+                      "Hey, what's up?",
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+                body: Container(
+                  child: ListView.builder(
+                      itemCount: options.length,
+                      itemBuilder: (context, index) {
+                        return options[index];
+                      }),
+                )),
+          )
+        ),
     );
   }
 
@@ -105,21 +194,16 @@ class _HomeState extends State<Home> {
 
     await _fcm.getToken().then((token) async {
       try {
-        await http.post(
-          '${Constants.SERVER_URL}user/update_user_token',
-          headers: {
-            HttpHeaders.contentTypeHeader: "application/json",
-            HttpHeaders.authorizationHeader: "Bearer ${_userModel.accessToken}"
-          },
-          body: convert.jsonEncode({
-            'user_id': '${_userModel.userId}',
-            'token': '$token'
-          })
-        );
-      }
-      catch (err) {}
-    })
-    .catchError((err) {
+        await http.post('${Constants.SERVER_URL}user/update_user_token',
+            headers: {
+              HttpHeaders.contentTypeHeader: "application/json",
+              HttpHeaders.authorizationHeader:
+                  "Bearer ${_userModel.accessToken}"
+            },
+            body: convert.jsonEncode(
+                {'user_id': '${_userModel.userId}', 'token': '$token'}));
+      } catch (err) {}
+    }).catchError((err) {
       Fluttertoast.showToast(msg: err.message.toString());
     });
 
@@ -211,23 +295,23 @@ class _HomeState extends State<Home> {
 
   Future<bool> _onWillPop() async {
     return (await showDialog(
-      context: context,
-      builder: (context) => new AlertDialog(
-        title: new Text('Are you sure?'),
-        content: new Text('Do you want to exit an App'),
-        actions: <Widget>[
-          new FlatButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: new Text('No'),
+          context: context,
+          builder: (context) => new AlertDialog(
+            title: new Text('Are you sure?'),
+            content: new Text('Do you want to exit an App'),
+            actions: <Widget>[
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('No'),
+              ),
+              new FlatButton(
+                onPressed: () => exit(0),
+                child: new Text('Yes'),
+              ),
+            ],
           ),
-          new FlatButton(
-            onPressed: () => exit(0),
-            child: new Text('Yes'),
-          ),
-        ],
-      ),
-    )) ??
-    false;
+        )) ??
+        false;
   }
 
   void initSocket() async {
@@ -240,41 +324,29 @@ class _HomeState extends State<Home> {
       var data = convert.jsonDecode(payload);
       String screen = data['data']['screen'];
       if (screen == 'chat') {
-        Navigator.of(context).push(
-          MaterialPageRoute(
+        Navigator.of(context).push(MaterialPageRoute(
             builder: (_) => ChatMessagesPage(
-              ChatModel(
-                data['data']['chat_id'],
-                data['data']['name'],
-                data['data']['img'],
-                data['data']['conversation_id'],
-              ),
-              "PC"
-            )
-          )
-        );
-      }
-      else if (screen == 'comment') {
+                ChatModel(
+                  data['data']['chat_id'],
+                  data['data']['name'],
+                  data['data']['img'],
+                  data['data']['conversation_id'],
+                ),
+                "PC")));
+      } else if (screen == 'comment') {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => CommentsPage(PostModel(
-                postId: data['data']['id'],
-                postOwnerId: data['data']['post_owner_id']
-              ),
-              false
-            )
-          )
-        );
-      }
-      else if (screen == 'like') {
+            builder: (_) => CommentsPage(
+                PostModel(
+                    postId: data['data']['id'],
+                    postOwnerId: data['data']['post_owner_id']),
+                false)));
+      } else if (screen == 'like') {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => CommentsPage(PostModel(
-                postId: data['data']['id'],
-                postOwnerId: data['data']['post_owner_id']
-              ),
-              false
-            )
-          )
-        );
+            builder: (_) => CommentsPage(
+                PostModel(
+                    postId: data['data']['id'],
+                    postOwnerId: data['data']['post_owner_id']),
+                false)));
       }
     }
     i++;
@@ -295,15 +367,11 @@ class _HomeState extends State<Home> {
     );
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
     var platformChannelSpecifics = new NotificationDetails(
-      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics
-    );
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
 
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      message['title'].toString(),
-      message['body'], platformChannelSpecifics,
-      payload: convert.jsonEncode(message2)
-    );
+    await flutterLocalNotificationsPlugin.show(0, message['title'].toString(),
+        message['body'], platformChannelSpecifics,
+        payload: convert.jsonEncode(message2));
   }
 
   void startNavigate(Map<String, dynamic> data) {
@@ -313,39 +381,28 @@ class _HomeState extends State<Home> {
 
       if (screen == 'chat') {
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (_) => ChatMessagesPage(
-              ChatModel(
-                notificationData['chat_id'],
-                notificationData['name'],
-                notificationData['img'],
-                notificationData['conversation_id'],
-              ),
-              "PC"
-            )
-          )
-        );
-      }
-      else if (screen == 'comment') {
+            builder: (_) => ChatMessagesPage(
+                ChatModel(
+                  notificationData['chat_id'],
+                  notificationData['name'],
+                  notificationData['img'],
+                  notificationData['conversation_id'],
+                ),
+                "PC")));
+      } else if (screen == 'comment') {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => CommentsPage(PostModel(
-                postId: notificationData['id'],
-                postOwnerId: notificationData['post_owner_id']
-              ),
-              false
-            )
-          )
-        );
-      }
-      else if (screen == 'like') {
+            builder: (_) => CommentsPage(
+                PostModel(
+                    postId: notificationData['id'],
+                    postOwnerId: notificationData['post_owner_id']),
+                false)));
+      } else if (screen == 'like') {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => CommentsPage(PostModel(
-                postId: notificationData['id'],
-                postOwnerId: notificationData['post_owner_id']
-              ),
-              false
-            )
-          )
-        );
+            builder: (_) => CommentsPage(
+                PostModel(
+                    postId: notificationData['id'],
+                    postOwnerId: notificationData['post_owner_id']),
+                false)));
       }
     }
     i3++;

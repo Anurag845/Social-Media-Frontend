@@ -1,4 +1,3 @@
-//created by Hatem Ragap
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -61,7 +60,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
                         child: Icon(
                           LineAwesomeIcons.home,
                           color: index == 0
-                              ? Colors.green
+                              ? Colors.blue[600]
                               : themeProvider
                                   .getThemeData.accentIconTheme.color,
                           size: iconSize,
@@ -77,7 +76,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
                         child: Icon(
                           LineAwesomeIcons.comments,
                           color: index == 2
-                              ? Colors.green
+                              ? Colors.blue[600]
                               : themeProvider
                                   .getThemeData.accentIconTheme.color,
                           size: iconSize,
@@ -93,7 +92,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
                         child: Icon(
                           FontAwesomeIcons.facebookMessenger,
                           color: index == 3
-                              ? Colors.green
+                              ? Colors.blue[600]
                               : themeProvider
                                   .getThemeData.accentIconTheme.color,
                           size: 21,
@@ -109,7 +108,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
                         child: Icon(
                           LineAwesomeIcons.bell,
                           color: index == 1
-                              ? Colors.green
+                              ? Colors.blue[600]
                               : themeProvider
                                   .getThemeData.accentIconTheme.color,
                           size: iconSize + 1,
@@ -125,7 +124,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
                         child: Icon(
                           LineAwesomeIcons.cog,
                           color: index == 4
-                              ? Colors.green
+                              ? Colors.blue[600]
                               : themeProvider
                                   .getThemeData.accentIconTheme.color,
                           size: 26,

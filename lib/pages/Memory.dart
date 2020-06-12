@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as imageLib;
 import 'package:image_picker/image_picker.dart';
 import 'package:photofilters/photofilters.dart';
+import 'package:video_player/video_player.dart';
 
 class Memory extends StatefulWidget {
 
@@ -17,13 +18,15 @@ class Memory extends StatefulWidget {
 class _MemoryState extends State<Memory> {
 
   File imageFile;
+  File videoFile;
+  VideoPlayerController _videoPlayerController;
   String filePath;
   var image;
   String fileName;
   bool empty = true;
   String fileType = "";
 
-  Future getImage() async {
+  getImage() async {
     File imagefile;
     imagefile = await ImagePicker.pickImage(source: ImageSource.gallery);
     if(imagefile == null) {
@@ -49,19 +52,33 @@ class _MemoryState extends State<Memory> {
     }
   }
 
+  getVideo() async {
+    File video = await ImagePicker.pickVideo(source: ImageSource.gallery);
+    videoFile = video;
+    _videoPlayerController = VideoPlayerController.file(videoFile)..initialize().then((_) {
+      setState(() {
+        empty = false;
+      });
+    });
+  }
+
   @override
   void initState() {
     empty = true;
     super.initState();
-    //getImage();
+  }
+
+  void dispose() {
+    _videoPlayerController.dispose();
+    super.dispose();
   }
 
   Future<bool> _onWillPop() async {
-    return (await showDialog(
+    return(await showDialog(
         context: context,
         builder: (context) => new AlertDialog(
           title: new Text('Are you sure?'),
-          content: new Text('Do you want to discard this moment?'),
+          content: new Text('Do you want to discard this memory?'),
           actions: <Widget>[
             new FlatButton(
               onPressed: () => Navigator.of(context).pop(false),
@@ -112,7 +129,9 @@ class _MemoryState extends State<Memory> {
                 RaisedButton(
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   color: Colors.cyan[200],
-                  onPressed: () {},
+                  onPressed: () {
+                    getVideo();
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -136,10 +155,43 @@ class _MemoryState extends State<Memory> {
               )
             : Image.file(imageFile),
           )
-          : Container()
+          : _videoPlayerController == null
+          ? Container(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.green,
+            ),
+          )
+          : _videoPlayerController.value.initialized
+          ? AspectRatio(
+            aspectRatio: _videoPlayerController.value.aspectRatio,
+            child: VideoPlayer(_videoPlayerController),
+          )
+          : Container(
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.green,
+            ),
+          )
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: empty
+          ? () {}
+          : () {
+            setState(() {
+              _videoPlayerController.value.isPlaying
+                ? _videoPlayerController.pause()
+                : _videoPlayerController.play();
+            });
+          },
+          child: _videoPlayerController == null
+          ? Container()
+          : Icon(
+            _videoPlayerController.value.isPlaying ? Icons.pause : Icons.play_arrow,
+          )
         ),
         bottomNavigationBar: empty
-        ? Container()
+        ? BottomAppBar(
+
+        )
         : BottomAppBar(
           color: Colors.white,
           child: Row(

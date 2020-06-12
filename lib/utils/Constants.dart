@@ -1,4 +1,3 @@
-//created by Hatem Ragap
 class Constants {
   static const ADMIN_EMAIL = "admin@admin.com";
 
