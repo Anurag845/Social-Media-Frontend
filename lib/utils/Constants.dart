@@ -31,6 +31,7 @@ class Constants {
   static const MomentPageRoute = 'sharemoment';
   static const MemoryPageRoute = 'sharememory';
   static const PhotoEditorPageRoute = 'photoeditor';
+  static const LocationPageRoute = 'location';
   static const SingleCategoryPageRoute = 'singlecategory';
   static const SingleGroupPageRoute = 'singlegroup';
   static const SplashScreenRoute = 'splashscreen';

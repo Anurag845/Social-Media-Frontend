@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:lockdown_diaries/pages/TrimmerPage.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as imageLib;
 import 'package:image_picker/image_picker.dart';
 import 'package:photofilters/photofilters.dart';
-import 'package:video_player/video_player.dart';
+import 'package:video_trimmer/video_trimmer.dart';
 
 class Memory extends StatefulWidget {
 
@@ -18,48 +19,39 @@ class Memory extends StatefulWidget {
 class _MemoryState extends State<Memory> {
 
   File imageFile;
+  final picker = ImagePicker();
   File videoFile;
-  VideoPlayerController _videoPlayerController;
+  //VideoPlayerController _videoPlayerController;
   String filePath;
   var image;
   String fileName;
   bool empty = true;
   String fileType = "";
+  final Trimmer _trimmer = Trimmer();
 
   getImage() async {
-    File imagefile;
-    imagefile = await ImagePicker.pickImage(source: ImageSource.gallery);
-    if(imagefile == null) {
-      setState(() {
-        empty = true;
-      });
-    }
-    else {
-      String filename = path.basename(imagefile.path);
-      print("File name from imagepicker:- " + filename);
-      image = imageLib.decodeImage(imagefile.readAsBytesSync());
-      image = imageLib.copyResize(image, width: 600);
-      Directory tempDir = await getTemporaryDirectory();
-      String filepath = tempDir.path;
-      File tempImage = await imagefile.copy('$filepath/$filename');
-      setState(() {
-        empty = false;
-        fileType = "image";
-        imageFile = tempImage;
-        filePath = tempImage.path;
-        fileName = filename;
-      });
-    }
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    File imagefile = File(pickedFile.path);
+    String filename = path.basename(imagefile.path);
+    image = imageLib.decodeImage(imagefile.readAsBytesSync());
+    image = imageLib.copyResize(image, width: 600);
+    setState(() {
+      empty = false;
+      imageFile = File(pickedFile.path);
+      fileName = filename;
+    });
   }
 
   getVideo() async {
-    File video = await ImagePicker.pickVideo(source: ImageSource.gallery);
-    videoFile = video;
-    _videoPlayerController = VideoPlayerController.file(videoFile)..initialize().then((_) {
-      setState(() {
-        empty = false;
-      });
-    });
+    final pickedFile = await picker.getVideo(source: ImageSource.gallery);
+    videoFile = File(pickedFile.path);
+    if (videoFile != null) {
+      await _trimmer.loadVideo(videoFile: videoFile);
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) {
+        return TrimmerView(_trimmer);
+      }));
+    }
   }
 
   @override
@@ -69,7 +61,7 @@ class _MemoryState extends State<Memory> {
   }
 
   void dispose() {
-    _videoPlayerController.dispose();
+    //_videoPlayerController.dispose();
     super.dispose();
   }
 
@@ -131,6 +123,9 @@ class _MemoryState extends State<Memory> {
                   color: Colors.cyan[200],
                   onPressed: () {
                     getVideo();
+                    /*Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => MyHomePage())
+                    );*/
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -145,7 +140,14 @@ class _MemoryState extends State<Memory> {
               ],
             ),
           )
-          : fileType == "image"
+          : imageFile == null
+          ? Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.green,
+              ),
+            )
+          : Image.file(imageFile),
+          /*: fileType == "image"
           ? Container(
             child: imageFile == null
             ? Center(
@@ -170,9 +172,9 @@ class _MemoryState extends State<Memory> {
             child: CircularProgressIndicator(
               backgroundColor: Colors.green,
             ),
-          )
+          )*/
         ),
-        floatingActionButton: FloatingActionButton(
+        /*floatingActionButton: FloatingActionButton(
           onPressed: empty
           ? () {}
           : () {
@@ -187,7 +189,7 @@ class _MemoryState extends State<Memory> {
           : Icon(
             _videoPlayerController.value.isPlaying ? Icons.pause : Icons.play_arrow,
           )
-        ),
+        ),*/
         bottomNavigationBar: empty
         ? BottomAppBar(
 
@@ -199,8 +201,7 @@ class _MemoryState extends State<Memory> {
             //textDirection: TextDirection.,
             children: <Widget>[
               FlatButton(
-                onPressed: fileType == "image"
-                  ? () async {
+                onPressed: () async {
                   Map imagefile = await Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -229,9 +230,6 @@ class _MemoryState extends State<Memory> {
                       MaterialPageRoute(builder: (context) => Cropper(tempImage.path))
                     );*/
                   }
-                }
-                : () {
-
                 },
                 child: Text("NEXT"),
               )

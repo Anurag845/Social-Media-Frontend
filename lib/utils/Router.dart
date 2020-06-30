@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lockdown_diaries/pages/CreatePost.dart';
 import 'package:lockdown_diaries/pages/Home.dart';
+import 'package:lockdown_diaries/pages/Location.dart';
 import 'package:lockdown_diaries/pages/LoginPage.dart';
 import 'package:lockdown_diaries/pages/Memory.dart';
 import 'package:lockdown_diaries/pages/Moment.dart';
@@ -28,6 +29,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case Constants.PhotoEditorPageRoute:
       var argument = settings.arguments;
       return MaterialPageRoute(builder: (context) => Cropper(argument));
+    case Constants.LocationPageRoute:
+      return MaterialPageRoute(builder: (context) => Location());
     default:
       return MaterialPageRoute(builder: (context) => Home());
   }
