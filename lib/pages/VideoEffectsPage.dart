@@ -1,17 +1,17 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fijkplayer/fijkplayer.dart';
-import 'package:image_picker/image_picker.dart';
 
-class MyHomePage extends StatefulWidget {
+class VideoEffectsPage extends StatefulWidget {
+  final String videoPath;
+  VideoEffectsPage(this.videoPath);
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _VideoEffectsPageState createState() => _VideoEffectsPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _VideoEffectsPageState extends State<VideoEffectsPage> {
   final FijkPlayer player = FijkPlayer();
-  String videoPath;
+  /*String videoPath;
   File video;
   final ImagePicker _picker = ImagePicker();
 
@@ -21,15 +21,17 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       player.setDataSource(videoPath, autoPlay: true);
     });
-  }
+  }*/
 
   @override
   void initState() {
     super.initState();
-    getVideo();
-    /*player.setDataSource(
-        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-        autoPlay: true);*/
+    //getVideo();
+    player.setDataSource(
+      widget.videoPath,
+      //"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+      autoPlay: true
+    );
   }
 
   @override

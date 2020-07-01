@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:video_trimmer/trim_editor.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 import 'package:video_trimmer/video_viewer.dart';
 
 class TrimmerView extends StatefulWidget {
   final Trimmer _trimmer;
-  TrimmerView(this._trimmer);
+  final String videoPath;
+  TrimmerView(this._trimmer, this.videoPath);
   @override
   _TrimmerViewState createState() => _TrimmerViewState();
 }
@@ -16,6 +19,11 @@ class _TrimmerViewState extends State<TrimmerView> {
 
   bool _isPlaying = false;
   bool _progressVisibility = false;
+
+  String filename;
+  String filepath;
+
+  FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
 
   Future<String> _saveVideo() async {
     setState(() {
@@ -36,9 +44,18 @@ class _TrimmerViewState extends State<TrimmerView> {
     return _value;
   }
 
-  next() async {
+  /*next() async {
+    filename = basename(widget.videoPath);
+    Directory tempDir = await getTemporaryDirectory();
+    filepath = tempDir.path;
 
-  }
+    _flutterFFmpeg.execute("-i ${widget.videoPath} -c copy -an $filepath/trimmed$filename")
+    .then((rc) => print("FFmpeg process exited with rc $rc"));
+
+    print("Received video path - ${widget.videoPath}");
+    print("FFMPEG to be output - $filepath");
+
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +78,7 @@ class _TrimmerViewState extends State<TrimmerView> {
                     backgroundColor: Colors.red,
                   ),
                 ),
-                RaisedButton(
+                /*RaisedButton(
                   onPressed: _progressVisibility
                       ? null
                       : () async {
@@ -72,7 +89,7 @@ class _TrimmerViewState extends State<TrimmerView> {
                           });
                         },
                   child: Text("SAVE"),
-                ),
+                ),*/
                 Expanded(
                   child: VideoViewer(),
                 ),
@@ -119,6 +136,24 @@ class _TrimmerViewState extends State<TrimmerView> {
               ],
             ),
           ),
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            FlatButton(
+              child: Text("NEXT"),
+              onPressed: _progressVisibility
+              ? null
+              : () async {
+                _saveVideo().then((outputPath) {
+                  print('OUTPUT PATH: $outputPath');
+                  Navigator.of(context).pushNamed(Constants.VideoEffectsPageRoute, arguments: outputPath);
+                });
+              },
+            )
+          ],
         ),
       ),
     );

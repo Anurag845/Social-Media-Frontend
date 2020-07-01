@@ -47,9 +47,13 @@ class _MemoryState extends State<Memory> {
     videoFile = File(pickedFile.path);
     if (videoFile != null) {
       await _trimmer.loadVideo(videoFile: videoFile);
+      String filename = path.basename(videoFile.path);
+      Directory tempDir = await getTemporaryDirectory();
+      String filepath = tempDir.path;
+      File video = await videoFile.copy('$filepath/captured$filename');
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) {
-        return TrimmerView(_trimmer);
+        return TrimmerView(_trimmer, video.path);
       }));
     }
   }

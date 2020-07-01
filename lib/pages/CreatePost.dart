@@ -29,7 +29,7 @@ class _CreatePostState extends State<CreatePost> {
       //Navigator.of(context).push(MaterialPageRoute(builder: (context) => Photo(ImageSource.gallery)));
     },));
     options.insert(3,ListTile(title: Text("Showcase your talent"),onTap: () {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyHomePage()));
+      //Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyHomePage()));
     },));
     options.insert(4,ListTile(title: Text("I've been here"),onTap: () {},));
     options.insert(5,ListTile(title: Text("Start a story"),onTap: () {},));
