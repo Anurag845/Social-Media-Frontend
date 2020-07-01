@@ -2,7 +2,7 @@ class Constants {
   static const ADMIN_EMAIL = "admin@admin.com";
 
   static const PORT = 3000;
-  static const IP ='192.168.43.18'; //only change this by your IPv4 Address
+  static const IP ='svn.ethdc.in'; //only change this by your IPv4 Address
   static const SERVER_URL = 'http://$IP:$PORT/api/';
   static const SERVER_IMAGE_URL = 'http://$IP:$PORT/';
   static const USERS_PROFILES_URL = 'http://$IP:$PORT/uploads/users_profile_img/';

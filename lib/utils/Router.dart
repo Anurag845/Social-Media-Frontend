@@ -32,7 +32,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => Cropper(argument));
     case Constants.VideoEffectsPageRoute:
       var argument = settings.arguments;
-      return MaterialPageRoute(builder: (context) => VideoEffectsPage(argument));
+      return MaterialPageRoute(builder: (context) => ControllerStreamUsagePage(argument));
     case Constants.LocationPageRoute:
       return MaterialPageRoute(builder: (context) => Location());
     default:

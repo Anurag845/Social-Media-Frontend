@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:video_trimmer/trim_editor.dart';
 import 'package:video_trimmer/video_trimmer.dart';
@@ -23,8 +22,6 @@ class _TrimmerViewState extends State<TrimmerView> {
   String filename;
   String filepath;
 
-  FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
-
   Future<String> _saveVideo() async {
     setState(() {
       _progressVisibility = true;
@@ -43,19 +40,6 @@ class _TrimmerViewState extends State<TrimmerView> {
 
     return _value;
   }
-
-  /*next() async {
-    filename = basename(widget.videoPath);
-    Directory tempDir = await getTemporaryDirectory();
-    filepath = tempDir.path;
-
-    _flutterFFmpeg.execute("-i ${widget.videoPath} -c copy -an $filepath/trimmed$filename")
-    .then((rc) => print("FFmpeg process exited with rc $rc"));
-
-    print("Received video path - ${widget.videoPath}");
-    print("FFMPEG to be output - $filepath");
-
-  }*/
 
   @override
   Widget build(BuildContext context) {
