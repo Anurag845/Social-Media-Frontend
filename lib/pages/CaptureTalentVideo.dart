@@ -40,10 +40,36 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   bool enableAudio = true;
   FlutterFFmpeg flutterFFmpeg = new FlutterFFmpeg();
 
+  bool frontexists = false;
+  bool backexists = false;
+
+  String currentCamera;
+  CameraDescription frontCamera;
+  CameraDescription rearCamera;
+
+  static const String FRONT = "FRONT";
+  static const String REAR = "REAR";
+
+  void setDefaultCamera() {
+    for(CameraDescription cameraDescription in cameras) {
+      if(cameraDescription.lensDirection == CameraLensDirection.front) {
+        onNewCameraSelected(cameraDescription);
+        frontexists = true;
+        frontCamera = cameraDescription;
+        currentCamera = FRONT;
+      }
+      else if(cameraDescription.lensDirection == CameraLensDirection.back) {
+        backexists = true;
+        rearCamera = cameraDescription;
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    setDefaultCamera();
   }
 
   @override
@@ -74,7 +100,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Camera example'),
+        title: const Text('Capture your Talent'),
       ),
       body: Column(
         children: <Widget>[
@@ -91,13 +117,50 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                 border: Border.all(
                   color: controller != null && controller.value.isRecordingVideo
                       ? Colors.redAccent
-                      : Colors.grey,
-                  width: 3.0,
+                      : Colors.black,
+                  width: 1.0,
                 ),
               ),
             ),
           ),
-          _captureControlRowWidget(),
+          Container(
+            padding: EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    currentCamera == FRONT
+                    ? Icons.camera_rear
+                    : Icons.camera_front
+                  ),
+                  onPressed: _switchCamera,
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.audiotrack
+                  ),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(
+                    enableAudio
+                    ? Icons.mic_off
+                    : Icons.mic
+                  ),
+                  onPressed: _toggleAudio,
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.fiber_manual_record
+                  ),
+                  onPressed: () {},
+                )
+              ],
+            ),
+          )
+
+          /*_captureControlRowWidget(),
           _toggleAudioWidget(),
           Padding(
             padding: const EdgeInsets.all(5.0),
@@ -108,7 +171,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                 _thumbnailWidget(),
               ],
             ),
-          ),
+          ),*/
         ],
       ),
     );
@@ -125,7 +188,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           fontWeight: FontWeight.w900,
         ),
       );
-    } else {
+    }
+    else {
       return AspectRatio(
         aspectRatio: controller.value.aspectRatio,
         child: CameraPreview(controller),
@@ -133,8 +197,29 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     }
   }
 
+  _switchCamera() {
+    switch (currentCamera) {
+      case FRONT:
+        onNewCameraSelected(rearCamera);
+        currentCamera = REAR;
+        break;
+      case REAR:
+        onNewCameraSelected(frontCamera);
+        currentCamera = FRONT;
+        break;
+      default:
+    }
+  }
+
+  _toggleAudio() {
+    enableAudio = !enableAudio;
+    if(controller != null) {
+      onNewCameraSelected(controller.description);
+    }
+  }
+
   /// Toggle recording audio
-  Widget _toggleAudioWidget() {
+  /*Widget _toggleAudioWidget() {
     return Padding(
       padding: const EdgeInsets.only(left: 25),
       child: Row(
@@ -152,7 +237,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         ],
       ),
     );
-  }
+  }*/
 
   /// Display the thumbnail of the captured image or video.
   Widget _thumbnailWidget() {
@@ -221,8 +306,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               controller.value.isInitialized &&
               controller.value.isRecordingVideo
               ? (controller != null && controller.value.isRecordingPaused
-              ? onResumeButtonPressed
-              : onPauseButtonPressed)
+                ? onResumeButtonPressed
+                : onPauseButtonPressed
+              )
               : null,
         ),
         IconButton(
@@ -244,7 +330,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
     if (cameras.isEmpty) {
       return const Text('No camera found');
-    } else {
+    }
+    else {
       for (CameraDescription cameraDescription in cameras) {
         toggles.add(
           SizedBox(
