@@ -55,11 +55,6 @@ class _HomeState extends State<Home> {
   void initState() {
     _userModel = Provider.of<AuthProvider>(context, listen: false).userModel;
 
-    //print("User id obtained from UserModel is "+_userModel.userId);
-
-    //Provider.of<ConversionProvider>(context, listen: false)
-    //.initConversionSocketAndRequestChats(_userModel);
-
     Provider.of<PostProvider>(context, listen: false)
         .startGetPostsData(_userModel.userId, _userModel.accessToken);
 
@@ -89,7 +84,6 @@ class _HomeState extends State<Home> {
           title: Text("Share this moment"),
           onTap: () {
             Navigator.of(context).pushNamed(Constants.MomentPageRoute);
-            //Navigator.of(context).push(MaterialPageRoute(builder: (context) => Photo(ImageSource.camera)));
           },
         ));
     options.insert(
@@ -99,7 +93,6 @@ class _HomeState extends State<Home> {
           title: Text("Share a memory"),
           onTap: () {
             Navigator.of(context).pushNamed(Constants.MemoryPageRoute);
-            //Navigator.of(context).push(MaterialPageRoute(builder: (context) => Photo(ImageSource.gallery)));
           },
         ));
     options.insert(
@@ -108,7 +101,9 @@ class _HomeState extends State<Home> {
           leading:
               Icon(Icons.directions_run, color: Colors.purple[600], size: 32),
           title: Text("Showcase your talent"),
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).pushNamed(Constants.CaptureTalentPageRoute);
+          },
         ));
     options.insert(
         4,

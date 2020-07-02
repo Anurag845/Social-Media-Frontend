@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:admob_flutter/admob_flutter.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,9 +20,12 @@ import 'package:lockdown_diaries/providers/PostProvider.dart';
 import 'package:lockdown_diaries/providers/Theme_provider.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
 
-void main() {
+List<CameraDescription> cameras = [];
+
+Future<void> main() async {
   //set up providers
   WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
   Admob.initialize(getAppId());
   runApp(OverlaySupport(
     child: MultiProvider(providers: [

@@ -30,6 +30,7 @@ class Constants {
   static const PersonalChatsPageRoute = 'personalchats';
   static const MomentPageRoute = 'sharemoment';
   static const MemoryPageRoute = 'sharememory';
+  static const CaptureTalentPageRoute = 'capturetalent';
   static const PhotoEditorPageRoute = 'photoeditor';
   static const VideoEffectsPageRoute = 'videoeditor';
   static const LocationPageRoute = 'location';

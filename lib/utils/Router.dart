@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lockdown_diaries/pages/CaptureTalentVideo.dart';
 import 'package:lockdown_diaries/pages/CreatePost.dart';
 import 'package:lockdown_diaries/pages/Home.dart';
 import 'package:lockdown_diaries/pages/Location.dart';
@@ -27,6 +28,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => Moment());
     case Constants.MemoryPageRoute:
       return MaterialPageRoute(builder: (context) => Memory());
+    case Constants.CaptureTalentPageRoute:
+      return MaterialPageRoute(builder: (context) => CameraExampleHome());
     case Constants.PhotoEditorPageRoute:
       var argument = settings.arguments;
       return MaterialPageRoute(builder: (context) => Cropper(argument));
