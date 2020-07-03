@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:lockdown_diaries/main.dart';
 import 'package:path_provider/path_provider.dart';
@@ -71,6 +72,12 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   void initState() {
     _timerController = TimerController(this);
     super.initState();
+
+    SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+    ]);
+
     WidgetsBinding.instance.addObserver(this);
     setDefaultCamera();
   }
@@ -79,6 +86,13 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
   }
 
   @override
@@ -110,18 +124,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         width: MediaQuery.of(context).size.width,
         child: Stack(
           children: <Widget>[
-              Container(
-                child: _cameraPreviewWidget(),
-                /*decoration: BoxDecoration(
-                  color: Colors.black,
-                  border: Border.all(
-                    color: controller != null && controller.value.isRecordingVideo
-                        ? Colors.redAccent
-                        : Colors.black,
-                    width: 0.0,
-                  ),
-                ),*/
-              ),
+            Container(
+              child: _cameraPreviewWidget(),
+            ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -194,32 +199,21 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               top: 10,
               right: 10,
               child: Container(
-                height: 80,
-                width: 80,
+                height: 48,
+                width: 48,
                 child: SimpleTimer(
                   controller: _timerController,
                   duration: Duration(seconds: 15),
+                  progressIndicatorColor: Colors.red[700],
+                  displayProgressText: false,
                   onEnd: controller != null &&
                         controller.value.isInitialized &&
                         controller.value.isRecordingVideo
                         ? onStopButtonPressed
                         : null,
-                ),
+                )
               ),
             )
-
-          /*_captureControlRowWidget(),
-          _toggleAudioWidget(),
-          Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                _cameraTogglesRowWidget(),
-                _thumbnailWidget(),
-              ],
-            ),
-          ),*/
           ],
         ),
       )
@@ -275,140 +269,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     if(controller != null) {
       onNewCameraSelected(controller.description);
     }
-  }
-
-  /// Toggle recording audio
-  /*Widget _toggleAudioWidget() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 25),
-      child: Row(
-        children: <Widget>[
-          const Text('Enable Audio:'),
-          Switch(
-            value: enableAudio,
-            onChanged: (bool value) {
-              enableAudio = value;
-              if (controller != null) {
-                onNewCameraSelected(controller.description);
-              }
-            },
-          ),
-        ],
-      ),
-    );
-  }*/
-
-  /// Display the thumbnail of the captured image or video.
-  Widget _thumbnailWidget() {
-    return Expanded(
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            videoController == null && imagePath == null
-                ? Container()
-                : SizedBox(
-              child: (videoController == null)
-                  ? Image.file(File(imagePath))
-                  : Container(
-                child: Center(
-                  child: AspectRatio(
-                      aspectRatio:
-                      videoController.value.size != null
-                          ? videoController.value.aspectRatio
-                          : 1.0,
-                      child: VideoPlayer(videoController)),
-                ),
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.pink)),
-              ),
-              width: 64.0,
-              height: 64.0,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Display the control bar with buttons to take pictures and record videos.
-  Widget _captureControlRowWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.camera_alt),
-          color: Colors.blue,
-          onPressed: controller != null &&
-              controller.value.isInitialized &&
-              !controller.value.isRecordingVideo
-              ? onTakePictureButtonPressed
-              : null,
-        ),
-        IconButton(
-          icon: const Icon(Icons.videocam),
-          color: Colors.blue,
-          onPressed: controller != null &&
-              controller.value.isInitialized &&
-              !controller.value.isRecordingVideo
-              ? onVideoRecordButtonPressed
-              : null,
-        ),
-        IconButton(
-          icon: controller != null && controller.value.isRecordingPaused
-              ? Icon(Icons.play_arrow)
-              : Icon(Icons.pause),
-          color: Colors.blue,
-          onPressed: controller != null &&
-              controller.value.isInitialized &&
-              controller.value.isRecordingVideo
-              ? (controller != null && controller.value.isRecordingPaused
-                ? onResumeButtonPressed
-                : onPauseButtonPressed
-              )
-              : null,
-        ),
-        IconButton(
-          icon: const Icon(Icons.stop),
-          color: Colors.red,
-          onPressed: controller != null &&
-              controller.value.isInitialized &&
-              controller.value.isRecordingVideo
-              ? onStopButtonPressed
-              : null,
-        )
-      ],
-    );
-  }
-
-  /// Display a row of toggle to select the camera (or a message if no camera is available).
-  Widget _cameraTogglesRowWidget() {
-    final List<Widget> toggles = <Widget>[];
-
-    if (cameras.isEmpty) {
-      return const Text('No camera found');
-    }
-    else {
-      for (CameraDescription cameraDescription in cameras) {
-        toggles.add(
-          SizedBox(
-            width: 90.0,
-            child: RadioListTile<CameraDescription>(
-              title: Icon(getCameraLensIcon(cameraDescription.lensDirection)),
-              groupValue: controller?.description,
-              value: cameraDescription,
-              onChanged: controller != null && controller.value.isRecordingVideo
-                  ? null
-                  : onNewCameraSelected,
-            ),
-          ),
-        );
-      }
-    }
-
-    return Row(children: toggles);
   }
 
   String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
