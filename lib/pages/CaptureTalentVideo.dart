@@ -6,6 +6,7 @@ import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:lockdown_diaries/main.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
+import 'package:simple_timer/simple_timer.dart';
 
 class CameraExampleHome extends StatefulWidget {
   @override
@@ -31,11 +32,12 @@ void logError(String code, String message) =>
     print('Error: $code\nError Message: $message');
 
 class _CameraExampleHomeState extends State<CameraExampleHome>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   CameraController controller;
   String imagePath;
   String videoPath;
   VideoPlayerController videoController;
+  TimerController _timerController;
   VoidCallback videoPlayerListener;
   bool enableAudio = true;
   FlutterFFmpeg flutterFFmpeg = new FlutterFFmpeg();
@@ -67,6 +69,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   @override
   void initState() {
+    _timerController = TimerController(this);
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     setDefaultCamera();
@@ -102,63 +105,108 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       appBar: AppBar(
         title: const Text('Capture your Talent'),
       ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              child: Padding(
-                padding: const EdgeInsets.all(1.0),
-                child: Center(
-                  child: _cameraPreviewWidget(),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Stack(
+          children: <Widget>[
+              Container(
+                child: _cameraPreviewWidget(),
+                /*decoration: BoxDecoration(
+                  color: Colors.black,
+                  border: Border.all(
+                    color: controller != null && controller.value.isRecordingVideo
+                        ? Colors.redAccent
+                        : Colors.black,
+                    width: 0.0,
+                  ),
+                ),*/
+              ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                color: Colors.white,
+                margin: EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(
+                        currentCamera == FRONT
+                        ? Icons.camera_rear
+                        : Icons.camera_front
+                      ),
+                      onPressed: _switchCamera,
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.audiotrack
+                      ),
+                      onPressed: () {},
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        enableAudio
+                        ? Icons.mic_off
+                        : Icons.mic
+                      ),
+                      onPressed: _toggleAudio,
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.fiber_manual_record
+                      ),
+                      onPressed: controller != null &&
+                        controller.value.isInitialized &&
+                        !controller.value.isRecordingVideo
+                        ? onVideoRecordButtonPressed
+                        : null,
+                    ),
+                    IconButton(
+                      icon: controller != null && controller.value.isRecordingPaused
+                        ? Icon(Icons.play_arrow)
+                        : Icon(Icons.pause),
+                      color: Colors.blue,
+                      onPressed: controller != null &&
+                        controller.value.isInitialized &&
+                        controller.value.isRecordingVideo
+                        ? (controller != null && controller.value.isRecordingPaused
+                          ? onResumeButtonPressed
+                          : onPauseButtonPressed
+                        )
+                        : null,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.stop),
+                      color: Colors.red,
+                      onPressed: controller != null &&
+                        controller.value.isInitialized &&
+                        controller.value.isRecordingVideo
+                        ? onStopButtonPressed
+                        : null,
+                    )
+                  ],
+                ),
+              )
+            ),
+            Positioned(
+              top: 10,
+              right: 10,
+              child: Container(
+                height: 80,
+                width: 80,
+                child: SimpleTimer(
+                  controller: _timerController,
+                  duration: Duration(seconds: 15),
+                  onEnd: controller != null &&
+                        controller.value.isInitialized &&
+                        controller.value.isRecordingVideo
+                        ? onStopButtonPressed
+                        : null,
                 ),
               ),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                border: Border.all(
-                  color: controller != null && controller.value.isRecordingVideo
-                      ? Colors.redAccent
-                      : Colors.black,
-                  width: 1.0,
-                ),
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(
-                    currentCamera == FRONT
-                    ? Icons.camera_rear
-                    : Icons.camera_front
-                  ),
-                  onPressed: _switchCamera,
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.audiotrack
-                  ),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: Icon(
-                    enableAudio
-                    ? Icons.mic_off
-                    : Icons.mic
-                  ),
-                  onPressed: _toggleAudio,
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.fiber_manual_record
-                  ),
-                  onPressed: () {},
-                )
-              ],
-            ),
-          )
+            )
 
           /*_captureControlRowWidget(),
           _toggleAudioWidget(),
@@ -172,8 +220,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               ],
             ),
           ),*/
-        ],
-      ),
+          ],
+        ),
+      )
     );
   }
 
@@ -190,9 +239,19 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       );
     }
     else {
-      return AspectRatio(
-        aspectRatio: controller.value.aspectRatio,
-        child: CameraPreview(controller),
+      final size = MediaQuery.of(context).size;
+      return ClipRect(
+        child: Container(
+          child: Transform.scale(
+            scale: controller.value.aspectRatio / size.aspectRatio,
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: controller.value.aspectRatio,
+                child: CameraPreview(controller),
+              ),
+            ),
+          ),
+        ),
       );
     }
   }
@@ -404,7 +463,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           videoController?.dispose();
           videoController = null;
         });
-        if (filePath != null) showInSnackBar('Picture saved to $filePath');
+        //if (filePath != null) showInSnackBar('Picture saved to $filePath');
       }
     });
   }
@@ -412,7 +471,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   void onVideoRecordButtonPressed() {
     startVideoRecording().then((String filePath) {
       if (mounted) setState(() {});
-      if (filePath != null) showInSnackBar('Saving video to $filePath');
+      //if (filePath != null) showInSnackBar('Saving video to $filePath');
+      _timerController.start();
     });
   }
 
@@ -424,6 +484,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     stopVideoRecording().then((_) {
       if (mounted) setState(() {});
       showInSnackBar('Video recorded to: $videoPath');
+
+      _timerController.stop();
+      _timerController.reset();
 
       print('Video recording completed: $videoPath');
       secondOutputPath().then((secondVideo) {
@@ -437,14 +500,16 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   void onPauseButtonPressed() {
     pauseVideoRecording().then((_) {
       if (mounted) setState(() {});
-      showInSnackBar('Video recording paused');
+      _timerController.pause();
+      //showInSnackBar('Video recording paused');
     });
   }
 
   void onResumeButtonPressed() {
     resumeVideoRecording().then((_) {
       if (mounted) setState(() {});
-      showInSnackBar('Video recording resumed');
+      _timerController.start();
+      //showInSnackBar('Video recording resumed');
     });
   }
 
@@ -486,7 +551,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       return null;
     }
 
-    await _startVideoPlayer();
+    //await _startVideoPlayer();
   }
 
   Future<void> pauseVideoRecording() async {
