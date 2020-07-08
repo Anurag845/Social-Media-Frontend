@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:bubble/bubble.dart';
 import 'dart:io' as io;
@@ -12,6 +13,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:lockdown_diaries/providers/DateProvider.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:lockdown_diaries/customAppBars/ChatAppbar.dart';
@@ -25,9 +30,9 @@ import 'dart:convert' as convert;
 import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:lockdown_diaries/utils/Constants.dart';
 
-import 'package:async/async.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart' as Path;
+import 'package:uuid/uuid.dart';
 
 import 'FullScreenImg.dart';
 
@@ -55,8 +60,8 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
   bool isMicrophone = false;
   bool isCurrentUserTyping = false;
 
-  FlutterSound recorderModule = new FlutterSound();
-  FlutterSound playerModule = new FlutterSound();
+  FlutterSound recorderModule = FlutterSound();
+  FlutterSound playerModule = FlutterSound();
   StreamSubscription _recorderSubscription;
 
   double maxDuration = 1.0;
@@ -78,6 +83,7 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
     _userModel = Provider.of<AuthProvider>(context, listen: false).userModel;
     initSocket();
     startGetLastMessages();
+    _initRecorder();
   }
 
   void initSocket() async {
@@ -120,7 +126,13 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
+    cancelRecord();
     _unSubscribes();
+    _txtController.dispose();
+    if (recorderModule != null) closeRecorder();
+    cancelPlayerSubscriptions();
+    releaseFlauto();
     super.dispose();
   }
 
@@ -688,4 +700,199 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
   startDeleteMessage(String messageId) {
 
   }
+
+
+  void startSendImageMessageOrRecord(var file, int type, var _url, {isRecord = false}) async {
+    var stream = new http.ByteStream(file.openRead().cast());
+    var length = await file.length();
+    var uri = Uri.parse(_url);
+    var request = new http.MultipartRequest("POST", uri);
+    var multipartFile = new http.MultipartFile('image', stream, length,
+        filename: Path.basename(file.path));
+    request.files.add(multipartFile);
+    var response = await request.send();
+    response.stream.transform(convert.utf8.decoder).listen((value) async {
+      try {
+        var jsonResponse = await convert.jsonDecode(value);
+        bool error = jsonResponse['error'];
+        if (error == false) {
+          String imageName = jsonResponse['data'];
+
+          _sendMessage(type: type, image: imageName);
+        } else {
+          print('error! ' + jsonResponse);
+        }
+      } catch (err) {
+        print(err);
+      }
+    });
+  }
+
+  _initRecorder() async {
+    /*await recorderModule.setDbPeakLevelUpdate(0.8);
+    await recorderModule.setDbLevelEnabled(true);
+    await recorderModule.setDbLevelEnabled(true);*/
+
+    /*recorderModule.openAudioSession(
+        focus: AudioFocus.requestFocusTransient,
+        category: SessionCategory.playAndRecord,
+        mode: SessionMode.modeDefault,
+        device: AudioDevice.speaker);*/
+  }
+
+
+  /*_buildRecordWidget(ThemeProvider themeProvider) {
+    startRequestPermissionRec();
+    return Container(
+      color: themeProvider.getThemeData.brightness == Brightness.dark
+          ? Colors.white30
+          : Colors.black12,
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          InkWell(
+              onTap: () {
+                closeRecorder();
+                setState(() {
+                  isMicrophone = false;
+                });
+              },
+              child: Icon(
+                Icons.delete,
+                size: 30,
+              )),
+          Consumer<DateProvider>(builder: (context, dateProvider, child) {
+            return Text('${dateProvider.dateText}');
+          }),
+          InkWell(
+              onTap: () {
+                startSendRecording();
+              },
+              child: Icon(
+                Icons.play_arrow,
+                size: 35,
+              )),
+        ],
+      ),
+    );
+  }*/
+
+  void startSendRecording() async {
+    try {
+      String _url = '${Constants.SERVER_URL}chatMessages/uploadImage';
+      File file = localFileSystem.file(path);
+      await recorderModule.stopRecorder();
+
+      startSendImageMessageOrRecord(file, 2, _url, isRecord: true);
+
+      setState(() {
+        isMicrophone = false;
+      });
+    } catch (err) {
+      print('stopRecorder error: $err');
+    }
+  }
+
+  /*void startRequestPermissionRec() async {
+    if (await Permission.microphone.isGranted &&
+        await Permission.storage.isGranted) {
+      _startRecord();
+    }
+    else {
+      Map<Permission, PermissionStatus> statuses = await [
+        Permission.microphone,
+        Permission.storage,
+      ].request();
+
+      _startRecord();
+    }
+  }*/
+
+  /*_startRecord() async {
+    String id = Uuid().v1();
+    try {
+      Directory tempDir = await getTemporaryDirectory();
+      path = '${tempDir.path}/$id.aac';
+
+      path = await recorderModule.startRecorder(
+          codec: Codec.aacADTS, uri: path);
+      _recorderSubscription = recorderModule.onRecorderStateChanged.listen((e) {
+        if (e != null && e.currentPosition != null) {
+          DateTime date = new DateTime.fromMillisecondsSinceEpoch(
+              e.currentPosition.toInt(),
+              isUtc: true);
+          maxRecordDuration = DateFormat('mm:ss:SS', 'en_GB').format(date);
+          Provider.of<DateProvider>(context, listen: false).dateText =
+              maxRecordDuration.substring(0, 8);
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+  }*/
+
+  void closeRecorder() async {
+    try{
+      await recorderModule.stopRecorder();
+    }
+    catch(err){
+
+    }
+  }
+
+  void cancelPlayerSubscriptions() {
+    if (_playerSubscription != null) {
+      _playerSubscription.cancel();
+      _playerSubscription = null;
+    }
+  }
+
+  /*void _addListeners(messageProvider) {
+    cancelPlayerSubscriptions();
+    _playerSubscription = playerModule.onPlayerStateChanged.listen((e) {
+      if (e != null) {
+        maxDuration = e.duration;
+        if (maxDuration <= 0) maxDuration = 0.0;
+
+        DateTime date = new DateTime.fromMillisecondsSinceEpoch(
+            e.currentPosition.toInt(),
+            isUtc: true);
+        String txt = DateFormat('mm:ss:SS', 'en_GB').format(date);
+        messageProvider.playerText = txt.substring(0, 8);
+        if(e.currentPosition.toInt() == maxDuration)
+        {
+          messageProvider.currentIcon = 0;
+        }
+      }
+    });
+  }*/
+
+  /*Future _loadFile(String kUrl1, messageProvider) async {
+    final bytes = await http.readBytes(kUrl1);
+    final dir = await getApplicationDocumentsDirectory();
+    final file = File('${dir.path}/${Uuid().v1()}.aac');
+    await file.writeAsBytes(bytes);
+    if (await file.exists()) {
+      if (playerModule.isPlaying) {
+        await playerModule.stopPlayer();
+      }
+      else {
+        await playerModule.startPlayer(file.path);
+        _addListeners(messageProvider);
+      }
+
+    }
+  }*/
+
+  void releaseFlauto() async {
+    try {
+      await playerModule.stopPlayer();
+    }catch(err){}
+  }
+
+  void cancelRecord() async {
+    if (_recorderSubscription != null) _recorderSubscription.cancel();
+  }
+
 }

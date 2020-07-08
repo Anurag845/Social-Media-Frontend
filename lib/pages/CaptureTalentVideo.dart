@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:lockdown_diaries/main.dart';
+import 'package:lockdown_diaries/pages/IntermediatePage.dart';
+import 'package:lockdown_diaries/pages/IntermediatePage2.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:simple_timer/simple_timer.dart';
@@ -37,6 +39,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   CameraController controller;
   String imagePath;
   String videoPath;
+  String audioPath;
   VideoPlayerController videoController;
   TimerController _timerController;
   VoidCallback videoPlayerListener;
@@ -45,6 +48,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   bool frontexists = false;
   bool backexists = false;
+
+  var result;
 
   String currentCamera;
   CameraDescription frontCamera;
@@ -116,9 +121,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text('Capture your Talent'),
-      ),
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -130,7 +132,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                color: Colors.white,
+                color: Colors.white.withOpacity(0.6),
                 margin: EdgeInsets.all(10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -142,13 +144,29 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                         ? Icons.camera_rear
                         : Icons.camera_front
                       ),
-                      onPressed: _switchCamera,
+                      onPressed: controller.value.isRecordingVideo
+                        ? null
+                        : _switchCamera,
                     ),
                     IconButton(
                       icon: Icon(
                         Icons.audiotrack
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+                        result = await Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => AudioInter2("AUDIO"))
+                        );
+                      }//_fetchAudio,
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.music_video
+                      ),
+                      onPressed: () async {
+                        result = await Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => AudioInter2("VIDEO"))
+                        );
+                      }//_fetchAudio,
                     ),
                     IconButton(
                       icon: Icon(
@@ -156,7 +174,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                         ? Icons.mic_off
                         : Icons.mic
                       ),
-                      onPressed: _toggleAudio,
+                      onPressed: controller.value.isRecordingVideo
+                        ? null
+                        : _toggleAudio,
                     ),
                     IconButton(
                       icon: Icon(
@@ -196,11 +216,11 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               )
             ),
             Positioned(
-              top: 10,
+              top: 30,
               right: 10,
               child: Container(
-                height: 48,
-                width: 48,
+                height: 32,
+                width: 32,
                 child: SimpleTimer(
                   controller: _timerController,
                   duration: Duration(seconds: 15),
@@ -213,7 +233,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                         : null,
                 )
               ),
-            )
+            ),
           ],
         ),
       )

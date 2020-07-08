@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lockdown_diaries/pages/slider.dart';
 import 'package:lockdown_diaries/providers/CategoryProvider.dart';
 import 'package:lockdown_diaries/providers/GroupProvider.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -117,7 +118,11 @@ class _HomeState extends State<Home> {
         ListTile(
           leading: Icon(Icons.camera_front, color: Colors.green, size: 32),
           title: Text("Start a story"),
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => MyHomePage())
+            );
+          },
         ));
     options.insert(
         6,
