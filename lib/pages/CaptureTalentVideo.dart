@@ -49,8 +49,6 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   bool frontexists = false;
   bool backexists = false;
 
-  var result;
-
   String currentCamera;
   CameraDescription frontCamera;
   CameraDescription rearCamera;
@@ -153,20 +151,36 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                         Icons.audiotrack
                       ),
                       onPressed: () async {
-                        result = await Navigator.of(context).push(
+                        await Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) => AudioInter2("AUDIO"))
-                        );
-                      }//_fetchAudio,
+                        ).then((value) {
+
+
+                          audioPath = value;
+                          print("Value " + value);
+                          print("Audiopath " + audioPath);
+                          videoController = VideoPlayerController.file(File(audioPath))
+                          ..initialize().then((_) {
+                            setState(() {});
+                          });
+                        });
+                      }
                     ),
                     IconButton(
                       icon: Icon(
                         Icons.music_video
                       ),
                       onPressed: () async {
-                        result = await Navigator.of(context).push(
+                        await Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) => AudioInter2("VIDEO"))
-                        );
-                      }//_fetchAudio,
+                        ).then((value) {
+                          audioPath = value;
+                          videoController = VideoPlayerController.file(File(audioPath))
+                          ..initialize().then((_) {
+                            setState(() {});
+                          });
+                        });
+                      }
                     ),
                     IconButton(
                       icon: Icon(
@@ -335,7 +349,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     }
   }
 
-  void onTakePictureButtonPressed() {
+  /*void onTakePictureButtonPressed() {
     takePicture().then((String filePath) {
       if (mounted) {
         setState(() {
@@ -346,13 +360,16 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         //if (filePath != null) showInSnackBar('Picture saved to $filePath');
       }
     });
-  }
+  }*/
 
   void onVideoRecordButtonPressed() {
     startVideoRecording().then((String filePath) {
       if (mounted) setState(() {});
       //if (filePath != null) showInSnackBar('Saving video to $filePath');
       _timerController.start();
+      if(videoController.value.initialized) {
+        videoController.play();
+      }
     });
   }
 
@@ -366,6 +383,10 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       showInSnackBar('Video recorded to: $videoPath');
 
       _timerController.stop();
+      if(videoController.value.initialized) {
+        if(videoController.value.isPlaying) videoController.pause();
+        videoController.seekTo(Duration(seconds: 0));
+      }
       _timerController.reset();
 
       print('Video recording completed: $videoPath');
@@ -381,7 +402,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     pauseVideoRecording().then((_) {
       if (mounted) setState(() {});
       _timerController.pause();
-      //showInSnackBar('Video recording paused');
+      if(videoController.value.initialized && videoController.value.isPlaying) {
+        videoController.pause();
+      }
     });
   }
 
@@ -389,7 +412,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     resumeVideoRecording().then((_) {
       if (mounted) setState(() {});
       _timerController.start();
-      //showInSnackBar('Video recording resumed');
+      if(videoController.value.initialized && !videoController.value.isPlaying) {
+        videoController.play();
+      }
     });
   }
 
@@ -460,7 +485,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     }
   }
 
-  Future<void> _startVideoPlayer() async {
+  /*Future<void> _startVideoPlayer() async {
     final VideoPlayerController vcontroller =
     VideoPlayerController.file(File(videoPath));
     videoPlayerListener = () {
@@ -481,7 +506,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       });
     }
     await vcontroller.play();
-  }
+  }*/
 
   Future<String> takePicture() async {
     if (!controller.value.isInitialized) {

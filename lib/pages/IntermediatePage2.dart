@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
-
+import 'CaptureTalentVideo.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
@@ -21,6 +21,7 @@ class AudioInter2 extends StatefulWidget {
 class _AudioInterState extends State<AudioInter2> {
   //IjkMedia_controller _controller = IjkMedia_controller();
   String filePath;
+  String outputFilePath;
   List<String> allowedExtensions = List<String>();
   VideoPlayerController _controller;
   FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
@@ -136,16 +137,24 @@ class _AudioInterState extends State<AudioInter2> {
     return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 
+  callTrim(BuildContext context) async {
+    await trim();
+    print ('outputFilePath $outputFilePath');
+    Navigator.pop(context, outputFilePath);
+  }
+
   trim() async {
     String filename = basename(filePath);
-    print("Filename is " + filename);
+    //print("Filename is " + filename);
     Directory dir = await getApplicationDocumentsDirectory();
     String dirPath = dir.path;
+    outputFilePath = '$dirPath/$filename';
     int start = ((ellv*fileLength)/100).round();
     int end = ((euuv*fileLength)/100).round();
     String startPos = _getDurationString(Duration(seconds: start));
     String endPos = _getDurationString(Duration(seconds: end));
-    _flutterFFmpeg.execute("-ss $startPos -i '$filePath' -to $endPos -c copy '$dirPath/$filename'");
+    _flutterFFmpeg.execute("-ss $startPos -y -i '$filePath' -to $endPos -c copy '$outputFilePath'");
+    setState(() { });
   }
 
   @override
@@ -277,8 +286,7 @@ class _AudioInterState extends State<AudioInter2> {
                 child: FlatButton(
                   child: Text("Trim", style: TextStyle(color: Colors.white)),
                   onPressed: () {
-                    trim();
-                    Navigator.pop(context, widget.fileType);
+                    callTrim(context);
                   },
                 ),
               ),
