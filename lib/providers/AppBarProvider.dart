@@ -1,4 +1,3 @@
-//created by Hatem Ragap
 import 'package:flutter/foundation.dart';
 
 class AppBarProvider with ChangeNotifier {

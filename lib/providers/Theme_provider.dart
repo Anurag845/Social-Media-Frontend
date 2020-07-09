@@ -1,4 +1,3 @@
-//created by Hatem Ragap
 import 'package:flutter/material.dart';
 
 class ThemeProvider with ChangeNotifier {

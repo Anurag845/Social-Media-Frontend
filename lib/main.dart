@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lockdown_diaries/providers/CategoryProvider.dart';
 import 'package:lockdown_diaries/providers/GroupProvider.dart';
+import 'package:lockdown_diaries/providers/ShaderMaskProvider.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:lockdown_diaries/pages/SplashScreen.dart';
@@ -54,6 +55,9 @@ Future<void> main() async {
       ),
       ChangeNotifierProvider(
         create: (_) => CategoryProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => ShaderMaskProvider(),
       )
     ], child: MyApp()),
   ));

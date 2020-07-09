@@ -155,7 +155,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:lockdown_diaries/main.dart';
+import 'package:lockdown_diaries/providers/ShaderMaskProvider.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 class Moment extends StatefulWidget {
   @override
@@ -196,6 +198,9 @@ class _MomentState extends State<Moment>
   static const String FRONT = "FRONT";
   static const String REAR = "REAR";
 
+  Color color1;
+  Color color2;
+
   bool showFilters = false;
 
   void setDefaultCamera() {
@@ -224,6 +229,9 @@ class _MomentState extends State<Moment>
 
     WidgetsBinding.instance.addObserver(this);
     setDefaultCamera();
+
+    color1 = Provider.of<ShaderMaskProvider>(context, listen: false).firstcolor;
+    color2 = Provider.of<ShaderMaskProvider>(context, listen: false).secondcolor;
   }
 
   @override
@@ -279,30 +287,48 @@ class _MomentState extends State<Moment>
                   scrollDirection: Axis.horizontal,
                   padding: EdgeInsets.all(15),
                   children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      height: 40,
-                      width: 40,
-                      color: Colors.blue,
+                    InkWell(
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        height: 40,
+                        width: 40,
+                        color: Colors.white,
+                      ),
+                      onTap: () {
+                        color1 = Colors.transparent;
+                        color2 = Colors.transparent;
+                        Provider.of<ShaderMaskProvider>(context, listen: false)
+                          .updateColors(color1, color2);
+                      },
                     ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      height: 40,
-                      width: 40,
-                      color: Colors.green,
+                    InkWell(
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        height: 40,
+                        width: 40,
+                        color: Colors.blue,
+                      ),
+                      onTap: () {
+                        color1 = Colors.blue;
+                        color2 = Colors.blue[100];
+                        Provider.of<ShaderMaskProvider>(context, listen: false)
+                          .updateColors(color1, color2);
+                      },
                     ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      height: 40,
-                      width: 40,
-                      color: Colors.red,
+                    InkWell(
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        height: 40,
+                        width: 40,
+                        color: Colors.green,
+                      ),
+                      onTap: () {
+                        color1 = Colors.green[600];
+                        color2 = Colors.green[100];
+                        Provider.of<ShaderMaskProvider>(context, listen: false)
+                          .updateColors(color1, color2);
+                      },
                     ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      height: 40,
-                      width: 40,
-                      color: Colors.purple,
-                    )
                   ],
                 ),
               ),
@@ -388,11 +414,12 @@ class _MomentState extends State<Moment>
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Colors.white,
-                      Colors.yellow
+                      color1,
+                      color2
                     ]
                   ).createShader(bounds);
                 },
+                blendMode: BlendMode.color,
                 child: AspectRatio(
                   aspectRatio: controller.value.aspectRatio,
                   child: CameraPreview(controller),
