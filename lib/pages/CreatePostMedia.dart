@@ -3,7 +3,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:lockdown_diaries/models/CategoryModel.dart';
 import 'package:lockdown_diaries/models/UserModel.dart';
 import 'package:lockdown_diaries/pages/ChipPage.dart';

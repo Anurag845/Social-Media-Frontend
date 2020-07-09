@@ -14,7 +14,6 @@ import 'dart:io';
 import 'package:path/path.dart' as Path;
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
-import 'package:async/async.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddPost extends StatefulWidget {

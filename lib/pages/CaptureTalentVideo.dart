@@ -6,11 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:lockdown_diaries/main.dart';
-import 'package:lockdown_diaries/pages/IntermediatePage.dart';
 import 'package:lockdown_diaries/pages/IntermediatePage2.dart';
 import 'package:lockdown_diaries/pages/PlayerOverlay.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:video_player/video_player.dart';
 import 'package:simple_timer/simple_timer.dart';
 
 class CameraExampleHome extends StatefulWidget {

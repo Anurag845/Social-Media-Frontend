@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lockdown_diaries/models/CategoryModel.dart';
 import 'package:lockdown_diaries/models/UserModel.dart';
 import 'package:lockdown_diaries/providers/AuthProvider.dart';

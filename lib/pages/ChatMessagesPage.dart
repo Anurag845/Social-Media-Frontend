@@ -13,10 +13,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:lockdown_diaries/providers/DateProvider.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:lockdown_diaries/customAppBars/ChatAppbar.dart';
@@ -32,7 +28,6 @@ import 'package:lockdown_diaries/utils/Constants.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart' as Path;
-import 'package:uuid/uuid.dart';
 
 import 'FullScreenImg.dart';
 

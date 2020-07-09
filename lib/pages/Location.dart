@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_map_location_picker/google_map_location_picker.dart';
 
 class Location extends StatefulWidget {
   @override

@@ -17,7 +17,8 @@ class OverlayWidget extends StatefulWidget {
   _OverlayWidgetState createState() => _OverlayWidgetState();
 }
 
-const double _overlayWidth = 200;
+const double _overlayWidth = 120;
+const double _overlayHeight = 150;
 
 class _OverlayWidgetState extends State<OverlayWidget> {
   double dx = 0;
@@ -27,13 +28,21 @@ class _OverlayWidgetState extends State<OverlayWidget> {
   Widget build(BuildContext context) {
     return NotificationListener<OffsetNotification>(
       onNotification: _onOffsetNotification,
-      child: Align(
-        alignment: Alignment(dx, dy),
+      child:
+      Padding(
+        padding: EdgeInsets.only(top:50, left: 20),
+        child: 
+      Align(
+        // alignment: Alignment(dx, dy),
+        alignment: Alignment.topLeft,
         child: Container(
           width: _overlayWidth,
+          height: _overlayHeight,
           child: AspectRatio(
             aspectRatio: widget.initVideoInfo.ratio,
-            child: IjkPlayer(
+            child: Opacity(
+              opacity: 0.75,
+              child: IjkPlayer(
               mediaController: widget.controller,
               controllerWidgetBuilder: (ctl) {
                 return OverlayControllerWidget(
@@ -41,11 +50,11 @@ class _OverlayWidgetState extends State<OverlayWidget> {
                   onTapClose: widget.onTapClose,
                 );
               },
-            ),
+            )),
           ),
         ),
       ),
-    );
+    ));
   }
 
   Offset _startOffset;
