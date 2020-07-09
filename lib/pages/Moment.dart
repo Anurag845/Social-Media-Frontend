@@ -196,6 +196,8 @@ class _MomentState extends State<Moment>
   static const String FRONT = "FRONT";
   static const String REAR = "REAR";
 
+  bool showFilters = false;
+
   void setDefaultCamera() {
     for(CameraDescription cameraDescription in cameras) {
       if(cameraDescription.lensDirection == CameraLensDirection.front) {
@@ -266,6 +268,46 @@ class _MomentState extends State<Moment>
             Container(
               child: _cameraPreviewWidget(),
             ),
+            showFilters
+            ? Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                color: Colors.black.withOpacity(0.3),
+                height: 70,
+                margin: EdgeInsets.only(bottom: 80),
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.all(15),
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      height: 40,
+                      width: 40,
+                      color: Colors.blue,
+                    ),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      height: 40,
+                      width: 40,
+                      color: Colors.green,
+                    ),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      height: 40,
+                      width: 40,
+                      color: Colors.red,
+                    ),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      height: 40,
+                      width: 40,
+                      color: Colors.purple,
+                    )
+                  ],
+                ),
+              ),
+            )
+            : Container(),
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -276,6 +318,8 @@ class _MomentState extends State<Moment>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     IconButton(
+                      padding: EdgeInsets.all(15),
+                      iconSize: 28,
                       color: Colors.white,
                       icon: Icon(
                         Icons.switch_camera
@@ -283,18 +327,31 @@ class _MomentState extends State<Moment>
                       onPressed: _switchCamera,
                     ),
                     IconButton(
+                      padding: EdgeInsets.all(15),
+                      iconSize: 36,
                       color: Colors.white,
                       icon: Icon(
                         Icons.photo_camera
                       ),
-                      onPressed: () {},
+                      onPressed: controller.value.isInitialized
+                      ?  onTakePictureButtonPressed
+                      : null,
                     ),
                     IconButton(
+                      padding: EdgeInsets.all(15),
+                      iconSize: 26,
                       color: Colors.white,
                       icon: Icon(
                         Icons.filter
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          if(showFilters)
+                            showFilters = false;
+                          else
+                            showFilters = true;
+                        });
+                      },
                     )
                   ],
                 ),
@@ -310,7 +367,7 @@ class _MomentState extends State<Moment>
   Widget _cameraPreviewWidget() {
     if (controller == null || !controller.value.isInitialized) {
       return const Text(
-        'Tap a camera',
+        'Camera not available',
         style: TextStyle(
           color: Colors.white,
           fontSize: 24.0,
@@ -325,10 +382,22 @@ class _MomentState extends State<Moment>
           child: Transform.scale(
             scale: controller.value.aspectRatio / size.aspectRatio,
             child: Center(
-              child: AspectRatio(
-                aspectRatio: controller.value.aspectRatio,
-                child: CameraPreview(controller),
-              ),
+              child: ShaderMask(
+                shaderCallback: (Rect bounds) {
+                  return LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.white,
+                      Colors.yellow
+                    ]
+                  ).createShader(bounds);
+                },
+                child: AspectRatio(
+                  aspectRatio: controller.value.aspectRatio,
+                  child: CameraPreview(controller),
+                ),
+              )
             ),
           ),
         ),
@@ -394,19 +463,15 @@ class _MomentState extends State<Moment>
     }
   }
 
-  /*void onTakePictureButtonPressed() {
+  void onTakePictureButtonPressed() {
     takePicture().then((String filePath) {
       if (mounted) {
         setState(() {
           imagePath = filePath;
-          _videoController?.dispose();
-          _videoController = null;
         });
-        //if (filePath != null) showInSnackBar('Picture saved to $filePath');
       }
     });
-  }*/
-
+  }
 
   Future<int> executeFFmpeg(String command) async {
     return await flutterFFmpeg.execute(command);
