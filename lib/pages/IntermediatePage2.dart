@@ -142,10 +142,11 @@ class _AudioInterState extends State<AudioInter2> {
 
   trim() async {
     String filename = basename(filePath);
-    //print("Filename is " + filename);
+    String fileExtension = filename.split(".")[1];
+    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
     Directory dir = await getApplicationDocumentsDirectory();
     String dirPath = dir.path;
-    outputFilePath = '$dirPath/$filename';
+    outputFilePath = '$dirPath/$timestamp.$fileExtension';
     int start = ((ellv*fileLength)/100).round();
     int end = ((euuv*fileLength)/100).round();
     String startPos = _getDurationString(Duration(seconds: start));

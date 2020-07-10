@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lockdown_diaries/pages/CaptureTalentVideo2.dart';
 import 'package:lockdown_diaries/pages/slider.dart';
 import 'package:lockdown_diaries/providers/CategoryProvider.dart';
 import 'package:lockdown_diaries/providers/GroupProvider.dart';
@@ -103,7 +104,8 @@ class _HomeState extends State<Home> {
               Icon(Icons.directions_run, color: Colors.purple[600], size: 32),
           title: Text("Showcase your talent"),
           onTap: () {
-            Navigator.of(context).pushNamed(Constants.CaptureTalentPageRoute);
+            //Navigator.of(context).pushNamed(Constants.CaptureTalentPageRoute);
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CaptureTalent()));
           },
         ));
     options.insert(

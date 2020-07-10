@@ -10,12 +10,11 @@ import 'package:lockdown_diaries/pages/IntermediatePage2.dart';
 import 'package:lockdown_diaries/pages/PlayerOverlay.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:simple_timer/simple_timer.dart';
+import 'package:video_player/video_player.dart';
 
-class CameraExampleHome extends StatefulWidget {
+class CaptureTalent extends StatefulWidget {
   @override
-  _CameraExampleHomeState createState() {
-    return _CameraExampleHomeState();
-  }
+  _CaptureTalentState createState() => _CaptureTalentState();
 }
 
 /// Returns a suitable camera icon for [direction].
@@ -34,13 +33,13 @@ IconData getCameraLensIcon(CameraLensDirection direction) {
 void logError(String code, String message) =>
     print('Error: $code\nError Message: $message');
 
-class _CameraExampleHomeState extends State<CameraExampleHome>
+class _CaptureTalentState extends State<CaptureTalent>
     with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   CameraController controller;
   String imagePath;
   String videoPath;
   String audioPath;
-  //VideoPlayerController _videoController;
+  VideoPlayerController _videoController;
   TimerController _timerController;
   VoidCallback videoPlayerListener;
   bool enableAudio = true;
@@ -49,6 +48,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   bool frontexists = false;
   bool backexists = false;
 
+  bool video = false;
+
   String currentCamera;
   CameraDescription frontCamera;
   CameraDescription rearCamera;
@@ -56,8 +57,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   static const String FRONT = "FRONT";
   static const String REAR = "REAR";
 
-  IjkMediaController _videoController = IjkMediaController();
-  OverlayEntry entry;
+  /*IjkMediaController _videoController = IjkMediaController();
+  OverlayEntry entry;*/
 
   void setDefaultCamera() {
     for(CameraDescription cameraDescription in cameras) {
@@ -88,11 +89,11 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     setDefaultCamera();
   }
 
-  void deactivate() {
+  /*void deactivate() {
     super.deactivate();
     entry?.remove();
     entry = null;
-  }
+  }*/
 
   @override
   void dispose() {
@@ -123,7 +124,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     }
   }
 
-  void showInOverlay() async {
+  /*void showInOverlay() async {
     var info = await _videoController.getVideoInfo();
     OverlayEntry _entry;
     _entry = OverlayEntry(
@@ -138,7 +139,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       },
     );
     Overlay.of(context).insert(_entry);
-  }
+  }*/
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -182,17 +183,18 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                           MaterialPageRoute(builder: (context) => AudioInter2("AUDIO"))
                         ).then((value) {
                           audioPath = value;
-                          _videoController.setDataSource(
+                          /*_videoController.setDataSource(
                             DataSource.file(
                               File(audioPath),
                             ),
-                          );
+                          );*/
                           /*print("Value " + value);
                           print("Audiopath " + audioPath);
                           _videoController = VideoPlayerController.file(File(audioPath))
                           ..initialize().then((_) {
                             setState(() {});
                           });*/
+                          _initVideoPlayer(false);
                         });
                       }
                     ),
@@ -205,15 +207,18 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                           MaterialPageRoute(builder: (context) => AudioInter2("VIDEO"))
                         ).then((value) {
                           audioPath = value;
-                          _videoController.setDataSource(
+                          /*_videoController.setDataSource(
                             DataSource.file(
                               File(audioPath),
                             ),
                           );
-                          /*_videoController = VideoPlayerController.file(File(audioPath))
+
+                          _videoController = VideoPlayerController.file(File(audioPath))
                           ..initialize().then((_) {
+                            video = true;
                             setState(() {});
                           });*/
+                          _initVideoPlayer(true);
                         });
                       }
                     ),
@@ -286,6 +291,24 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
                 )
               ),
             ),
+            _videoController != null && video
+            ? Positioned(
+              top: 20,
+              left: 20,
+              child: _videoController.value.initialized
+              ? Container(
+                height: 70,
+                width: 70,
+                child: Center(
+                  child: AspectRatio(
+                    aspectRatio: _videoController.value.aspectRatio,
+                    child: VideoPlayer(_videoController),
+                  ),
+                ),
+              )
+              : Container()
+            )
+            : Container()
           ],
         ),
       )
@@ -405,11 +428,12 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       if (mounted) setState(() {});
       //if (filePath != null) showInSnackBar('Saving video to $filePath');
       _timerController.start();
-      showInOverlay();
-      _videoController.play();
-      /*if(_videoController.value.initialized) {
+      //showInOverlay();
+      //_videoController.play();
+      if(_videoController != null) {
+        if(_videoController.value.initialized)
         _videoController.play();
-      }*/
+      }
     });
   }
 
@@ -423,13 +447,22 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       showInSnackBar('Video recorded to: $videoPath');
 
       _timerController.stop();
-      _videoController.stop();
+      //_videoController.stop();
       /*if(_videoController.value.initialized) {
         if(_videoController.value.isPlaying) _videoController.pause();
         _videoController.seekTo(Duration(seconds: 0));
       }*/
       _timerController.reset();
-      _videoController.reset();
+      //_videoController.reset();
+
+      if(_videoController != null) {
+        if(_videoController.value.initialized) {
+          //if(_videoController.value.isPlaying) {
+            _videoController.pause();
+          //}
+          _videoController.seekTo(Duration(seconds: 0));
+        }
+      }
 
       print('Video recording completed: $videoPath');
       secondOutputPath().then((secondVideo) {
@@ -444,10 +477,13 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     pauseVideoRecording().then((_) {
       if (mounted) setState(() {});
       _timerController.pause();
-      _videoController.pause();
-      /*if(_videoController.value.initialized && _videoController.value.isPlaying) {
-        _videoController.pause();
-      }*/
+      if(_videoController != null) {
+        if(_videoController.value.initialized) {
+          if(_videoController.value.isPlaying) {
+            _videoController.pause();
+          }
+        }
+      }
     });
   }
 
@@ -455,10 +491,13 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     resumeVideoRecording().then((_) {
       if (mounted) setState(() {});
       _timerController.start();
-      _videoController.play();
-      /*if(_videoController.value.initialized && !_videoController.value.isPlaying) {
-        _videoController.play();
-      }*/
+      if(_videoController != null) {
+        if(_videoController.value.initialized) {
+          if(!_videoController.value.isPlaying) {
+            _videoController.play();
+          }
+        }
+      }
     });
   }
 
@@ -529,9 +568,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     }
   }
 
-  /*Future<void> _startVideoPlayer() async {
+  Future<void> _initVideoPlayer(bool value) async {
     final VideoPlayerController vcontroller =
-    VideoPlayerController.file(File(videoPath));
+    VideoPlayerController.file(File(audioPath));
     videoPlayerListener = () {
       if (_videoController != null && _videoController.value.size != null) {
         // Refreshing the state to update video player with the correct ratio.
@@ -540,17 +579,18 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       }
     };
     vcontroller.addListener(videoPlayerListener);
-    await vcontroller.setLooping(true);
+    //await vcontroller.setLooping(true);
     await vcontroller.initialize();
-    await _videoController?.dispose();
+    //await _videoController?.dispose();
     if (mounted) {
       setState(() {
-        imagePath = null;
+        //imagePath = null;
+        video = value;
         _videoController = vcontroller;
       });
     }
-    await vcontroller.play();
-  }*/
+    //await vcontroller.play();
+  }
 
   Future<String> takePicture() async {
     if (!controller.value.isInitialized) {
