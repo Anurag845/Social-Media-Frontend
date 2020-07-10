@@ -8,6 +8,7 @@ import 'package:lockdown_diaries/pages/Memory.dart';
 import 'package:lockdown_diaries/pages/Moment.dart';
 import 'package:lockdown_diaries/pages/PhotoEditor.dart';
 import 'package:lockdown_diaries/pages/SplashScreen.dart';
+import 'package:lockdown_diaries/pages/TalentVideoPreview.dart';
 import 'package:lockdown_diaries/pages/VideoEffectsPage.dart';
 import 'package:lockdown_diaries/pages/WelcomePage.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
@@ -30,6 +31,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => Memory());
     case Constants.CaptureTalentPageRoute:
       return MaterialPageRoute(builder: (context) => CameraExampleHome());
+    case Constants.TalentPreviewPageRoute:
+      var argument = settings.arguments;
+      return MaterialPageRoute(builder: (context) => TalentVideoPreview(argument));
     case Constants.PhotoEditorPageRoute:
       var argument = settings.arguments;
       return MaterialPageRoute(builder: (context) => Cropper(argument));

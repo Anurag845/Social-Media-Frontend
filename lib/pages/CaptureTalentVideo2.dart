@@ -8,6 +8,7 @@ import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 import 'package:lockdown_diaries/main.dart';
 import 'package:lockdown_diaries/pages/IntermediatePage2.dart';
 import 'package:lockdown_diaries/pages/PlayerOverlay.dart';
+import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:simple_timer/simple_timer.dart';
 import 'package:video_player/video_player.dart';
@@ -39,6 +40,7 @@ class _CaptureTalentState extends State<CaptureTalent>
   String imagePath;
   String videoPath;
   String audioPath;
+  String finalVideoPath;
   VideoPlayerController _videoController;
   TimerController _timerController;
   VoidCallback videoPlayerListener;
@@ -262,7 +264,12 @@ class _CaptureTalentState extends State<CaptureTalent>
                       onPressed: controller != null &&
                         controller.value.isInitialized &&
                         controller.value.isRecordingVideo
-                        ? onStopButtonPressed
+                        ? () {
+                          onStopButtonPressed();
+                          Navigator.of(context).pushNamed(
+                            Constants.TalentPreviewPageRoute, arguments: finalVideoPath
+                          );
+                        }
                         : null,
                     )
                   ],
@@ -285,7 +292,9 @@ class _CaptureTalentState extends State<CaptureTalent>
                         controller.value.isRecordingVideo
                         ? () {
                           onStopButtonPressed();
-                          // push TalentVideoPreview
+                          Navigator.of(context).pushNamed(
+                            Constants.TalentPreviewPageRoute, arguments: finalVideoPath
+                          );
                         }
                         : null,
                 )
@@ -444,7 +453,7 @@ class _CaptureTalentState extends State<CaptureTalent>
   void onStopButtonPressed() {
     stopVideoRecording().then((_) {
       if (mounted) setState(() {});
-      showInSnackBar('Video recorded to: $videoPath');
+      //showInSnackBar('Video recorded to: $videoPath');
 
       _timerController.stop();
       //_videoController.stop();
@@ -465,11 +474,25 @@ class _CaptureTalentState extends State<CaptureTalent>
       }
 
       print('Video recording completed: $videoPath');
-      secondOutputPath().then((secondVideo) {
-        executeFFmpeg("-i $videoPath -c:v copy $secondVideo").then((rc) {
-          print("FFmpeg process completed with $rc.");
+      if(audioPath == null) {
+        secondOutputPath().then((secondVideo) {
+          finalVideoPath = secondVideo;
+          executeFFmpeg("-i $videoPath -c:v copy $finalVideoPath")
+          .then((rc) {
+            print("FFmpeg process completed with $rc.");
+          });
         });
-      });
+      }
+      else {
+        secondOutputPath().then((secondVideo) {
+          finalVideoPath = secondVideo;
+          executeFFmpeg("-i $videoPath -i $audioPath -c:v copy -c:a aac -shortest $finalVideoPath")
+          .then((rc) {
+            print("FFmpeg process completed with $rc.");
+          });
+        });
+      }
+      setState(() { });
     });
   }
 

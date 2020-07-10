@@ -31,6 +31,7 @@ class Constants {
   static const MomentPageRoute = 'sharemoment';
   static const MemoryPageRoute = 'sharememory';
   static const CaptureTalentPageRoute = 'capturetalent';
+  static const TalentPreviewPageRoute = 'talentpreview';
   static const PhotoEditorPageRoute = 'photoeditor';
   static const VideoEffectsPageRoute = 'videoeditor';
   static const LocationPageRoute = 'location';
