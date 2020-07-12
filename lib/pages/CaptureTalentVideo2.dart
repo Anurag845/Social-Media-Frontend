@@ -236,26 +236,28 @@ class _CaptureTalentState extends State<CaptureTalent>
                     )),
               ),
               _videoController != null && video
-                  ? Positioned(
-                      top: 20,
-                      left: 20,
-                      child: _videoController.value.initialized
-                          ? Container(
-                              height: 70,
-                              width: 70,
-                              child: Center(
-                                child: AspectRatio(
-                                  aspectRatio:
-                                      _videoController.value.aspectRatio,
-                                  child: VideoPlayer(_videoController),
-                                ),
-                              ),
-                            )
-                          : Container())
+                ? Positioned(
+                  top: 20,
+                  left: 20,
+                  child: _videoController.value.initialized
+                  ? Container(
+                      height: 70,
+                      width: 70,
+                      child: Center(
+                        child: AspectRatio(
+                          aspectRatio:
+                              _videoController.value.aspectRatio,
+                          child: VideoPlayer(_videoController),
+                        ),
+                      ),
+                    )
                   : Container()
+                )
+                : Container()
             ],
           ),
-        ));
+        )
+      );
   }
 
   /// Display the preview from the camera (or a message if the preview is not available).
@@ -393,17 +395,34 @@ class _CaptureTalentState extends State<CaptureTalent>
           executeFFmpeg("-i $videoPath -c:v copy $finalVideoPath").then((rc) {
             print("FFmpeg process completed with $rc.");
 
+            File recordedVideo = File(videoPath);
+            recordedVideo.delete();
+
+            videoPath = null;
+
             Navigator.of(context).pushNamed(Constants.TalentPreviewPageRoute,
                 arguments: finalVideoPath);
           });
         });
-      } else {
+      }
+      else {
         secondOutputPath().then((secondVideo) {
           finalVideoPath = secondVideo;
           executeFFmpeg(
-                  "-i $videoPath -i $audioPath -c:v copy -c:a aac -shortest $finalVideoPath")
+            "-i $videoPath -i $audioPath -c copy -map 0:v:0 -map 1:a:0 -shortest $finalVideoPath")
               .then((rc) {
             print("FFmpeg process completed with $rc.");
+
+            File recordedVideo = File(videoPath);
+            recordedVideo.delete();
+
+            File pickedFile = File(audioPath);
+            pickedFile.delete();
+
+            videoPath = null;
+            audioPath = null;
+
+            if(video) video = false;
 
             Navigator.of(context).pushNamed(Constants.TalentPreviewPageRoute,
                 arguments: finalVideoPath);

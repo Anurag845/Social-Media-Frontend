@@ -452,14 +452,14 @@ class _MomentState extends State<Moment>
     _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(message)));
   }
 
-  static Future<String> secondOutputPath() async {
+  /*static Future<String> secondOutputPath() async {
     final Directory extDir = await getApplicationDocumentsDirectory();
     String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
 
     final String dirPath = '${extDir.path}/1234/user-posts';
     await Directory(dirPath).create(recursive: true);
     return '$dirPath/${timestamp()}.mp4';
-  }
+  }*/
 
   void onNewCameraSelected(CameraDescription cameraDescription) async {
     if (controller != null) {

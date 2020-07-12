@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 
 class TalentVideoPreview extends StatefulWidget {
   final String videoPath;
@@ -12,11 +13,15 @@ class TalentVideoPreview extends StatefulWidget {
 }
 
 class _TalentVideoPreviewState extends State<TalentVideoPreview> {
-  IjkMediaController controller = IjkMediaController();
+  IjkMediaController _controller = IjkMediaController();
   StreamSubscription subscription;
 
+  FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
+
+  FlutterFFmpegConfig _flutterFFmpegConfig = FlutterFFmpegConfig();
+
   subscriptPlayFinish() {
-    subscription = controller.playFinishStream.listen((data) {
+    subscription = _controller.playFinishStream.listen((data) {
       //showToast(currentI18n.playFinishToast);
     });
   }
@@ -24,8 +29,8 @@ class _TalentVideoPreviewState extends State<TalentVideoPreview> {
   @override
   void initState() {
     super.initState();
-    OptionUtils.addDefaultOptions(controller);
-    controller.setDataSource(
+    OptionUtils.addDefaultOptions(_controller);
+    _controller.setDataSource(
       DataSource.file(File(widget.videoPath)),
       autoPlay: true,
     );
@@ -35,7 +40,7 @@ class _TalentVideoPreviewState extends State<TalentVideoPreview> {
   @override
   void dispose() {
     subscription?.cancel();
-    controller?.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -46,7 +51,7 @@ class _TalentVideoPreviewState extends State<TalentVideoPreview> {
         children: <Widget>[
           Container(
             child: IjkPlayer(
-              mediaController: controller,
+              mediaController: _controller,
             ),
           ),
           Align(
@@ -60,34 +65,65 @@ class _TalentVideoPreviewState extends State<TalentVideoPreview> {
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          height: 50,
-                          width: 50,
-                          color: Colors.white,
-                        ),
-                        Container(
-                          height: 20,
-                          child: Text("Speed Up", style: TextStyle(color: Colors.white),),
-                        )
-                      ],
+                    child: InkWell(
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            height: 50,
+                            width: 50,
+                            child: Center(
+                              child: Icon(
+                                Icons.fast_forward,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 20,
+                            child: Text("Speed Up", style: TextStyle(color: Colors.white),),
+                          )
+                        ],
+                      ),
+                      onTap: () {
+                        _flutterFFmpegConfig.registerNewFFmpegPipe().then((pipePath) {
+                          _flutterFFmpeg.execute(
+                            '-i ${widget.videoPath} -filter_complex "[0:v]setpts=0.5*PTS[v];[0:a]atempo=2.0[a]" -map "[v]" -map "[a]" -f flv -y $pipePath'
+                          );
+                          _controller.setNetworkDataSource(pipePath, autoPlay: true);
+                          subscriptPlayFinish();
+                        });
+                      },
                     ),
                   ),
                   Container(
                     margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          height: 50,
-                          width: 50,
-                          color: Colors.blue,
-                        ),
-                        Container(
-                          height: 20,
-                          child: Text("Speed Up"),
-                        )
-                      ],
+                    child: InkWell(
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            height: 50,
+                            width: 50,
+                            //color: Colors.blue,
+                            child: Center(
+                              child: Icon(
+                                Icons.rotate_right,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 20,
+                            child: Text("Rotate", style: TextStyle(color: Colors.white)),
+                          )
+                        ],
+                      ),
+                      onTap: () {
+                        _flutterFFmpegConfig.registerNewFFmpegPipe().then((pipePath) {
+                          _flutterFFmpeg.execute('-i ${widget.videoPath} -vf "transpose=1" -f flv -y $pipePath');
+                          _controller.setNetworkDataSource(pipePath, autoPlay: true);
+                          subscriptPlayFinish();
+                        });
+                      },
                     ),
                   ),
                   Container(
@@ -101,7 +137,7 @@ class _TalentVideoPreviewState extends State<TalentVideoPreview> {
                         ),
                         Container(
                           height: 20,
-                          child: Text("Speed Up"),
+                          child: Text("Speed Up", style: TextStyle(color: Colors.white)),
                         )
                       ],
                     ),
