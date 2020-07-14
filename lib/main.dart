@@ -30,11 +30,12 @@ Future<void> main() async {
   Admob.initialize(getAppId());
   runApp(OverlaySupport(
     child: MultiProvider(providers: [
-      ChangeNotifierProvider(create: (_) => ThemeProvider(isLightTheme: true)),
+      ChangeNotifierProvider(
+        create: (_) => ThemeProvider(isLightTheme: true)
+      ),
       ChangeNotifierProvider(
         create: (_) => AuthProvider(),
       ),
-
       ChangeNotifierProvider(
         create: (_) => DateProvider(),
       ),

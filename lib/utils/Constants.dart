@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 class Constants {
   static const ADMIN_EMAIL = "admin@admin.com";
 
@@ -40,6 +42,7 @@ class Constants {
   static const SplashScreenRoute = 'splashscreen';
   static const WelcomePageRoute = 'welcome';
 
+  static List<Filter> filters = List<Filter>();
 
   // Go To https://apps.admob.com/ to get your app id and create banners and Interstitial
 
@@ -55,4 +58,19 @@ class Constants {
   static const BannerAdUnitIdAndroid = 'ca-app-pub-3940256099942544/1033173712';
 
   static const BannerAdUnitIdIOS = 'ca-app-pub-5232255599483761~4721854505';
+}
+
+
+class Filter {
+  String effectId;
+  String effectName;
+  Color color1;
+  Color color2;
+
+  Filter(String id, String name, Color c1, Color c2) {
+    this.effectId = id;
+    this.color1 = c1;
+    this.color2 = c2;
+    this.effectName = name;
+  }
 }

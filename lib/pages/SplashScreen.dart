@@ -21,6 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     checkTheme();
+    initFilterEffects();
     new Future.delayed(const Duration(milliseconds: 2500), () async {
       //check if email is save to start login if not Navigate to WelcomePage
       SharedPreferences sharedPreferences =
@@ -149,5 +150,36 @@ class _SplashScreenState extends State<SplashScreen> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     bool val = preferences.getBool('theme') ?? true;
     Provider.of<ThemeProvider>(context, listen: false).setThemeData = val;
+  }
+
+  void initFilterEffects() {
+    Constants.filters.add(
+      Filter("f1","Original",Colors.transparent,Colors.transparent)
+    );
+    Constants.filters.add(
+      Filter("f2","Vintage",Colors.white,Colors.black)
+    );
+    Constants.filters.add(
+      Filter("f3","Red",Colors.red,Colors.red)
+    );
+    Constants.filters.add(
+      Filter("f4","Green",Colors.green,Colors.green)
+    );
+    Constants.filters.add(
+      Filter("f5","Yellow",Colors.yellow,Colors.yellow)
+    );
+    Constants.filters.add(
+      Filter("f6","Blue",Colors.blue,Colors.blue)
+    );
+    Constants.filters.add(
+      Filter("f7","Brown",Colors.brown,Colors.brown)
+    );
+    Constants.filters.add(
+      Filter("f8","Grey",Colors.blueGrey,Colors.grey)
+    );
+    Constants.filters.add(
+      Filter("f9","Pink",Colors.pink,Colors.pink)
+    );
+    print("Length of filters in init is " + Constants.filters.length.toString());
   }
 }

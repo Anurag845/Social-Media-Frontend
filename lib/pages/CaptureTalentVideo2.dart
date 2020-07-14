@@ -92,6 +92,10 @@ class _CaptureTalentState extends State<CaptureTalent>
   void dispose() {
     _videoController?.dispose();
     WidgetsBinding.instance.removeObserver(this);
+
+    File pickedFile = File(audioPath);
+    pickedFile.delete();
+
     super.dispose();
 
     SystemChrome.setPreferredOrientations([
@@ -416,13 +420,7 @@ class _CaptureTalentState extends State<CaptureTalent>
             File recordedVideo = File(videoPath);
             recordedVideo.delete();
 
-            File pickedFile = File(audioPath);
-            pickedFile.delete();
-
             videoPath = null;
-            audioPath = null;
-
-            if(video) video = false;
 
             Navigator.of(context).pushNamed(Constants.TalentPreviewPageRoute,
                 arguments: finalVideoPath);

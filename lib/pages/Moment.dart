@@ -156,6 +156,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:lockdown_diaries/main.dart';
 import 'package:lockdown_diaries/providers/ShaderMaskProvider.dart';
+import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -283,7 +284,47 @@ class _MomentState extends State<Moment>
                 color: Colors.black.withOpacity(0.3),
                 height: 70,
                 margin: EdgeInsets.only(bottom: 80),
-                child: ListView(
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: Constants.filters.length,
+                  itemBuilder: (context, i) {
+                    return InkWell(
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              height: 40,
+                              width: 40,
+                              color: Constants.filters[i].color1,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black)
+                              ),
+                            ),
+                            Container(
+                              height: 20,
+                              width: 60,
+                              child: Text(
+                                Constants.filters[i].effectName,
+                                overflow: TextOverflow.fade,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        color1 = Constants.filters[i].color1;
+                        color2 = Constants.filters[i].color2;
+                        Provider.of<ShaderMaskProvider>(context, listen: false)
+                          .updateColors(color1, color2);
+                      },
+                    );
+                  }
+                ),
+                /*child: ListView(
                   scrollDirection: Axis.horizontal,
                   padding: EdgeInsets.all(15),
                   children: <Widget>[
@@ -330,7 +371,7 @@ class _MomentState extends State<Moment>
                       },
                     ),
                   ],
-                ),
+                ),*/
               ),
             )
             : Container(),
@@ -371,6 +412,7 @@ class _MomentState extends State<Moment>
                         Icons.filter
                       ),
                       onPressed: () {
+                        print("Length of filters in Moment is " + Constants.filters.length.toString());
                         setState(() {
                           if(showFilters)
                             showFilters = false;
