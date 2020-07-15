@@ -1,5 +1,3 @@
-//created by Hatem Ragap
-
 import 'dart:io';
 
 import 'package:fluttertoast/fluttertoast.dart';

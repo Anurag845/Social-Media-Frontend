@@ -9,8 +9,11 @@ import 'package:lockdown_diaries/providers/Theme_provider.dart';
 // ignore: must_be_immutable
 class FullScreenImg extends StatelessWidget {
   String imgUrl;
+  Color color1;
+  Color color2;
+  bool effect;
 
-  FullScreenImg(this.imgUrl);
+  FullScreenImg(this.imgUrl,this.effect,{this.color1,this.color2});
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +46,26 @@ class FullScreenImg extends StatelessWidget {
       ),
       body: SafeArea(
         child: Center(
-          child: PhotoView(
+          child: effect
+          ? ShaderMask(
+            shaderCallback: (Rect bounds) {
+              return LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  color1,
+                  color2
+                ]
+              ).createShader(bounds);
+            },
+            blendMode: BlendMode.color,
+            child: PhotoView(
+              imageProvider: NetworkImage(imgUrl),
+            ),
+          )
+          : PhotoView(
             imageProvider: NetworkImage(imgUrl),
-          ),
+          )
         ),
       ),
     );

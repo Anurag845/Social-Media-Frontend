@@ -149,23 +149,24 @@ class _PostsPageItemState extends State<PostsPageItem> {
             child: Row(
               children: <Widget>[
                 Container(
-                    width: 51,
-                    height: 51,
-                    margin: EdgeInsets.only(left: 5, top: 5),
-                    child: Stack(
-                      children: <Widget>[
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(60),
-                          child: CachedNetworkImage(
-                            imageUrl: Constants.USERS_PROFILES_URL +
-                                widget._userModel.img,
-                            fit: BoxFit.cover,
-                            width: 32,
-                            height: 32,
-                          ),
+                  width: 51,
+                  height: 51,
+                  margin: EdgeInsets.only(left: 5, top: 5),
+                  child: Stack(
+                    children: <Widget>[
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(60),
+                        child: CachedNetworkImage(
+                          imageUrl: Constants.USERS_PROFILES_URL +
+                              widget._userModel.img,
+                          fit: BoxFit.cover,
+                          width: 32,
+                          height: 32,
                         ),
-                      ],
-                    )),
+                      ),
+                    ],
+                  )
+                ),
                 SizedBox(
                   width: 8,
                 ),
@@ -191,13 +192,14 @@ class _PostsPageItemState extends State<PostsPageItem> {
             ),
           ),
           InkWell(
-              onTap: () {
-                _modalBottomSheetMenu();
-              },
-              child: Icon(
-                Icons.more_vert,
-                size: 25,
-              ))
+            onTap: () {
+              _modalBottomSheetMenu();
+            },
+            child: Icon(
+              Icons.more_vert,
+              size: 25,
+            )
+          )
         ],
       ),
       SizedBox(
@@ -218,52 +220,73 @@ class _PostsPageItemState extends State<PostsPageItem> {
       ),
 
       widget._postModel.hasImg?
-              ListView.builder(
-                physics: ClampingScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: widget._postModel.attachments.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => FullScreenImg(
-                              Constants.USERS_POSTS_IMAGES + widget._postModel.attachments[index].name
-                            )
-                          )
-                        );
-                      },
-                      child: Center(
-                        child: PinchZoomImage(
-                          image: CachedNetworkImage(
-                            imageUrl: Constants.USERS_POSTS_IMAGES + widget._postModel.attachments[index].name,
-                            placeholder: (c, d) {
-                              return Center(
-                                child: Container(
-                                  color: Colors.grey.shade100,
-                                  padding: EdgeInsets.only(
-                                      top: 100,
-                                      bottom: 100,
-                                      right: MediaQuery.of(context).size.width / 3 +
-                                          20,
-                                      left: MediaQuery.of(context).size.width / 3 +
-                                          20),
-                                  child: CircularProgressIndicator(
-                                    backgroundColor: Colors.green,
-                                  )
-                                ),
-                              );
-                            },
-                            fit: BoxFit.contain,
-                          )
-                        ),
+        ListView.builder(
+          physics: ClampingScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: widget._postModel.attachments.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => FullScreenImg(
+                        Constants.USERS_POSTS_IMAGES + widget._postModel.attachments[index].name,
+                        true,
+                        color1: widget._postModel.attachments[index].color1,
+                        color2: widget._postModel.attachments[index].color2
                       )
-                    ),
+                    )
                   );
                 },
-              )
-          : Container(),
+                child: Center(
+                  child: ShaderMask(
+                    shaderCallback: (Rect bounds) {
+                      return LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          widget._postModel.attachments[index].color1,
+                          widget._postModel.attachments[index].color2
+                        ]
+                      ).createShader(bounds);
+                    },
+                    blendMode: BlendMode.color,
+                    child: PinchZoomImage(
+                      image: CachedNetworkImage(
+                        imageUrl: Constants.USERS_POSTS_IMAGES + widget._postModel.attachments[index].name,
+                        placeholder: (c, d) {
+                          return Center(
+                            child: Container(
+                              color: Colors.grey.shade100,
+                              padding: EdgeInsets.only(
+                                top: 100,
+                                bottom: 100,
+                                right: MediaQuery.of(context).size.width / 3 +
+                                    20,
+                                left: MediaQuery.of(context).size.width / 3 +
+                                    20
+                              ),
+                              child: CircularProgressIndicator(
+                                backgroundColor: Colors.green,
+                              )
+                            ),
+                          );
+                        },
+                        fit: BoxFit.contain,
+                        errorWidget: (context,url,error) => new Icon(Icons.error),
+                      )
+                    ),
+                  )
+
+
+
+                )
+              ),
+            );
+          },
+        )
+      : Container(),
 
       SizedBox(
         height: 10,

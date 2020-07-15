@@ -1,10 +1,10 @@
-import 'dart:ui';
+import 'package:lockdown_diaries/utils/Classes.dart';
 
 class Constants {
   static const ADMIN_EMAIL = "admin@admin.com";
 
   static const PORT = 3000;
-  static const IP ='svn.ethdc.in'; //only change this by your IPv4 Address
+  static const IP ='192.168.43.18'; //only change this by your IPv4 Address
   static const SERVER_URL = 'http://$IP:$PORT/api/';
   static const SERVER_IMAGE_URL = 'http://$IP:$PORT/';
   static const USERS_PROFILES_URL = 'http://$IP:$PORT/uploads/users_profile_img/';
@@ -31,6 +31,7 @@ class Constants {
   static const ProfilePageRoute = 'profilepage';
   static const PersonalChatsPageRoute = 'personalchats';
   static const MomentPageRoute = 'sharemoment';
+  static const MomentPreviewPageRoute = 'momentpreview';
   static const MemoryPageRoute = 'sharememory';
   static const CaptureTalentPageRoute = 'capturetalent';
   static const TalentPreviewPageRoute = 'talentpreview';
@@ -58,19 +59,4 @@ class Constants {
   static const BannerAdUnitIdAndroid = 'ca-app-pub-3940256099942544/1033173712';
 
   static const BannerAdUnitIdIOS = 'ca-app-pub-5232255599483761~4721854505';
-}
-
-
-class Filter {
-  String effectId;
-  String effectName;
-  Color color1;
-  Color color2;
-
-  Filter(String id, String name, Color c1, Color c2) {
-    this.effectId = id;
-    this.color1 = c1;
-    this.color2 = c2;
-    this.effectName = name;
-  }
 }

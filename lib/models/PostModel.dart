@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class PostModel with ChangeNotifier {
   String postId;
@@ -66,16 +68,25 @@ class PostModel with ChangeNotifier {
 class Attachment {
   String guid;
   String name;
-  String effect;
+  String effectId;
+  String effectName;
+  Color color1;
+  Color color2;
 
   Attachment({
     this.guid,
     this.name,
-    this.effect
+    this.effectId,
+    this.effectName,
+    this.color1,
+    this.color2
   });
 
   Attachment.fromJson(Map jsonMap)
   : guid = jsonMap['guid'],
     name = jsonMap['name'],
-    effect = jsonMap['effect'];
+    effectId = jsonMap['effect_id'],
+    effectName = jsonMap['effect_name'],
+    color1 = jsonMap['color1'] == null ? Colors.transparent : Color(int.parse(jsonMap['color1'])),
+    color2 = jsonMap['color2'] == null ? Colors.transparent : Color(int.parse(jsonMap['color2']));
 }

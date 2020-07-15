@@ -9,16 +9,17 @@ import 'package:lockdown_diaries/pages/ChipPage.dart';
 import 'package:lockdown_diaries/providers/AuthProvider.dart';
 import 'package:lockdown_diaries/providers/CategoryProvider.dart';
 import 'package:lockdown_diaries/providers/PostProvider.dart';
+import 'package:lockdown_diaries/utils/Classes.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
 import 'dart:convert' as convert;
 
 class CreatePostWithMedia extends StatefulWidget {
-  //final File file;
   final String filePath;
+  final Filter filter;
 
-  CreatePostWithMedia(this.filePath);
+  CreatePostWithMedia(this.filePath, this.filter);
 
   @override
   _CreatePostWithMediaState createState() => _CreatePostWithMediaState();
@@ -65,6 +66,10 @@ class _CreatePostWithMediaState extends State<CreatePostWithMedia> {
       request.fields.addAll({
         "user_id": _userModel.userId,
         "descr": '${postTextController.text}',
+        "effect_id": widget.filter.effectId,
+        "effect_name": widget.filter.effectName,
+        "color1": '${widget.filter.color1.value}',
+        "color2": '${widget.filter.color2.value}'
       });
       request.headers.addAll({
         HttpHeaders.contentTypeHeader: "application/json",
@@ -209,9 +214,22 @@ class _CreatePostWithMediaState extends State<CreatePostWithMedia> {
                           ),
                         )
                         : Container(
-                          child: Center(
-                            child: Image.file(mediaFile),
-                          ),
+                          child: ShaderMask(
+                            shaderCallback: (Rect bounds) {
+                              return LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  widget.filter.color1,
+                                  widget.filter.color2
+                                ]
+                              ).createShader(bounds);
+                            },
+                            blendMode: BlendMode.color,
+                            child: Center(
+                              child: Image.file(mediaFile),
+                            ),
+                          )
                         )
                       ),
                       Align(

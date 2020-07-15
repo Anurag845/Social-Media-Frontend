@@ -239,7 +239,8 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => FullScreenImg(
-                                    Constants.USERS_MESSAGES_IMAGES + myMessage.image
+                                    Constants.USERS_MESSAGES_IMAGES + myMessage.image,
+                                    false
                                   )
                                 )
                               );
@@ -333,7 +334,8 @@ class _ChatMessagesPageState extends State<ChatMessagesPage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (_) => FullScreenImg(
-                                        Constants.USERS_MESSAGES_IMAGES + myMessage.image
+                                        Constants.USERS_MESSAGES_IMAGES + myMessage.image,
+                                        false
                                       )
                                     )
                                   );

@@ -155,7 +155,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:lockdown_diaries/main.dart';
+import 'package:lockdown_diaries/pages/MomentPreview.dart';
 import 'package:lockdown_diaries/providers/ShaderMaskProvider.dart';
+import 'package:lockdown_diaries/utils/Classes.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -199,8 +201,7 @@ class _MomentState extends State<Moment>
   static const String FRONT = "FRONT";
   static const String REAR = "REAR";
 
-  Color color1;
-  Color color2;
+  Filter filter;
 
   bool showFilters = false;
 
@@ -231,8 +232,7 @@ class _MomentState extends State<Moment>
     WidgetsBinding.instance.addObserver(this);
     setDefaultCamera();
 
-    color1 = Provider.of<ShaderMaskProvider>(context, listen: false).firstcolor;
-    color2 = Provider.of<ShaderMaskProvider>(context, listen: false).secondcolor;
+    filter = Provider.of<ShaderMaskProvider>(context, listen: false).filter;
   }
 
   @override
@@ -297,9 +297,9 @@ class _MomentState extends State<Moment>
                             Container(
                               height: 40,
                               width: 40,
-                              color: Constants.filters[i].color1,
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black)
+                                border: Border.all(color: Colors.black),
+                                color: Constants.filters[i].color1,
                               ),
                             ),
                             Container(
@@ -316,62 +316,13 @@ class _MomentState extends State<Moment>
                         ),
                       ),
                       onTap: () {
-                        color1 = Constants.filters[i].color1;
-                        color2 = Constants.filters[i].color2;
+                        filter = Constants.filters[i];
                         Provider.of<ShaderMaskProvider>(context, listen: false)
-                          .updateColors(color1, color2);
+                          .updateFilter(filter);
                       },
                     );
                   }
                 ),
-                /*child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.all(15),
-                  children: <Widget>[
-                    InkWell(
-                      child: Container(
-                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        height: 40,
-                        width: 40,
-                        color: Colors.white,
-                      ),
-                      onTap: () {
-                        color1 = Colors.transparent;
-                        color2 = Colors.transparent;
-                        Provider.of<ShaderMaskProvider>(context, listen: false)
-                          .updateColors(color1, color2);
-                      },
-                    ),
-                    InkWell(
-                      child: Container(
-                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        height: 40,
-                        width: 40,
-                        color: Colors.blue,
-                      ),
-                      onTap: () {
-                        color1 = Colors.blue;
-                        color2 = Colors.blue[100];
-                        Provider.of<ShaderMaskProvider>(context, listen: false)
-                          .updateColors(color1, color2);
-                      },
-                    ),
-                    InkWell(
-                      child: Container(
-                        margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        height: 40,
-                        width: 40,
-                        color: Colors.green,
-                      ),
-                      onTap: () {
-                        color1 = Colors.green[600];
-                        color2 = Colors.green[100];
-                        Provider.of<ShaderMaskProvider>(context, listen: false)
-                          .updateColors(color1, color2);
-                      },
-                    ),
-                  ],
-                ),*/
               ),
             )
             : Container(),
@@ -401,7 +352,9 @@ class _MomentState extends State<Moment>
                         Icons.photo_camera
                       ),
                       onPressed: controller.value.isInitialized
-                      ?  onTakePictureButtonPressed
+                      ?  () {
+                        onTakePictureButtonPressed(context);
+                      }
                       : null,
                     ),
                     IconButton(
@@ -456,8 +409,8 @@ class _MomentState extends State<Moment>
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      color1,
-                      color2
+                      filter.color1,
+                      filter.color2
                     ]
                   ).createShader(bounds);
                 },
@@ -532,12 +485,16 @@ class _MomentState extends State<Moment>
     }
   }
 
-  void onTakePictureButtonPressed() {
+  void onTakePictureButtonPressed(BuildContext context) {
     takePicture().then((String filePath) {
       if (mounted) {
         setState(() {
           imagePath = filePath;
         });
+        Navigator.of(context).pushReplacementNamed(
+          Constants.MomentPreviewPageRoute,
+          arguments: PhotoEffectArgs(imagePath,filter)
+        );
       }
     });
   }

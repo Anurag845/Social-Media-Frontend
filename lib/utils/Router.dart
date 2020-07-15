@@ -6,11 +6,13 @@ import 'package:lockdown_diaries/pages/Location.dart';
 import 'package:lockdown_diaries/pages/LoginPage.dart';
 import 'package:lockdown_diaries/pages/Memory.dart';
 import 'package:lockdown_diaries/pages/Moment.dart';
+import 'package:lockdown_diaries/pages/MomentPreview.dart';
 import 'package:lockdown_diaries/pages/PhotoEditor.dart';
 import 'package:lockdown_diaries/pages/SplashScreen.dart';
 import 'package:lockdown_diaries/pages/TalentVideoPreview.dart';
 import 'package:lockdown_diaries/pages/VideoEffectsPage.dart';
 import 'package:lockdown_diaries/pages/WelcomePage.dart';
+import 'package:lockdown_diaries/utils/Classes.dart';
 import 'package:lockdown_diaries/utils/Constants.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -27,6 +29,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => CreatePost());
     case Constants.MomentPageRoute:
       return MaterialPageRoute(builder: (context) => Moment());
+    case Constants.MomentPreviewPageRoute:
+      final PhotoEffectArgs args = settings.arguments;
+      return MaterialPageRoute(builder: (context) => MomentPreview(args.imagePath,args.filter));
     case Constants.MemoryPageRoute:
       return MaterialPageRoute(builder: (context) => Memory());
     case Constants.CaptureTalentPageRoute:
@@ -35,8 +40,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       var argument = settings.arguments;
       return MaterialPageRoute(builder: (context) => TalentVideoPreview(argument));
     case Constants.PhotoEditorPageRoute:
-      var argument = settings.arguments;
-      return MaterialPageRoute(builder: (context) => Cropper(argument));
+      final PhotoEffectArgs args = settings.arguments;
+      return MaterialPageRoute(builder: (context) => Cropper(args.imagePath,args.filter));
     case Constants.VideoEffectsPageRoute:
       var argument = settings.arguments;
       return MaterialPageRoute(builder: (context) => ControllerStreamUsagePage(argument));

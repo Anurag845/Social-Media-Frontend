@@ -188,7 +188,7 @@ class _MessagesPageState extends State<MessagesPage> {
                           : getMyMessageType(myMessage, themeProvider)
                       ),
                     );
-                  } 
+                  }
                   else {
                     //peer message
                     return InkWell(
@@ -261,7 +261,7 @@ class _MessagesPageState extends State<MessagesPage> {
                     Icons.done_all,
                     size: 15,
                   ));
-            } 
+            }
             else {
               return Container();
             }
@@ -501,7 +501,7 @@ class _MessagesPageState extends State<MessagesPage> {
     if (numberOfUsersConnectedToThisRoom == 2) {
       Provider.of<ConversionProvider>(context, listen: false)
           .setIsPeerSeeLastMessage(true);
-    } 
+    }
     else {
       Provider.of<ConversionProvider>(context, listen: false)
           .setIsPeerSeeLastMessage(false);
@@ -556,7 +556,7 @@ class _MessagesPageState extends State<MessagesPage> {
         message = '';
         _txtController.text = '';
       });
-    } 
+    }
     else {
       setState(() {
         _listMessages.insert(
@@ -772,7 +772,7 @@ class _MessagesPageState extends State<MessagesPage> {
     if (await Permission.microphone.isGranted &&
         await Permission.storage.isGranted) {
       _startRecord();
-    } 
+    }
     else {
       Map<Permission, PermissionStatus> statuses = await [
         Permission.microphone,
@@ -846,10 +846,14 @@ class _MessagesPageState extends State<MessagesPage> {
       return InkWell(
         onTap: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => FullScreenImg(
-                      Constants.USERS_MESSAGES_IMAGES + myMessage.img)));
+            context,
+            MaterialPageRoute(
+              builder: (_) => FullScreenImg(
+                Constants.USERS_MESSAGES_IMAGES + myMessage.img,
+                false
+              )
+            )
+          );
         },
         child: CachedNetworkImage(
           imageUrl: Constants.USERS_MESSAGES_IMAGES + myMessage.img,

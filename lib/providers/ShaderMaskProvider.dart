@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:lockdown_diaries/utils/Classes.dart';
+import 'package:lockdown_diaries/utils/Constants.dart';
 
 class ShaderMaskProvider extends ChangeNotifier {
 
-  Color _color1 = Colors.transparent;
-  Color _color2 = Colors.transparent;
+  Filter _filter = Constants.filters[0];
 
-  Color get firstcolor => _color1;
-  Color get secondcolor => _color2;
+  Filter get filter => _filter;
 
-  updateColors(Color c1, Color c2) {
-    _color1 = c1;
-    _color2 = c2;
-    notifyListeners();
+  updateFilter(Filter updatedFilter) {
+    _filter = updatedFilter;
   }
 }

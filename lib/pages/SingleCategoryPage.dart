@@ -111,6 +111,7 @@ class _SingleCategoryPageState extends State<SingleCategoryPage> {
                                       backgroundColor: Colors.green,
                                     )
                                   ),
+                                  errorWidget: (context,url,error) => new Icon(Icons.error),
                                 ),
                               ),
                             ),

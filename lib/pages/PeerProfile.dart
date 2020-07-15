@@ -46,7 +46,7 @@ class _PeerProfileState extends State<PeerProfile> {
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (_) =>
-              FullScreenImg(Constants.USERS_PROFILES_URL + peerModel.img)
+              FullScreenImg(Constants.USERS_PROFILES_URL + peerModel.img, false)
             )
           );
         },
@@ -366,7 +366,7 @@ class _PeerProfileState extends State<PeerProfile> {
     //start get Posts !
     String _url = "${Constants.SERVER_URL}post/fetch_posts_by_user_id";
     return http.post(
-      _url, 
+      _url,
       headers: {
         HttpHeaders.contentTypeHeader: "application/json",
         HttpHeaders.authorizationHeader: "Bearer ${_myModel.accessToken}"
