@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lockdown_diaries/utils/Classes.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/utils/Classes.dart';
+import 'package:navras/utils/Constants.dart';
 
 class ShaderMaskProvider extends ChangeNotifier {
 

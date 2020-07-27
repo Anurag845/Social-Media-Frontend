@@ -1,15 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:lockdown_diaries/models/GroupModel.dart';
-import 'package:lockdown_diaries/models/PostModel.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/pages/AddPost.dart';
-import 'package:lockdown_diaries/pages/InviteMembersPage.dart';
-import 'package:lockdown_diaries/providers/AuthProvider.dart';
-import 'package:lockdown_diaries/providers/GroupProvider.dart';
-import 'package:lockdown_diaries/providers/PostProvider.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
-import 'package:lockdown_diaries/widgets/PostsPageItem.dart';
+import 'package:navras/models/GroupModel.dart';
+import 'package:navras/models/PostModel.dart';
+import 'package:navras/models/UserModel.dart';
+import 'package:navras/pages/AddPost.dart';
+import 'package:navras/pages/InviteMembersPage.dart';
+import 'package:navras/providers/AuthProvider.dart';
+import 'package:navras/providers/GroupProvider.dart';
+import 'package:navras/providers/PostProvider.dart';
+import 'package:navras/utils/Constants.dart';
+import 'package:navras/widgets/PostsPageItem.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 

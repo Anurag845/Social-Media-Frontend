@@ -1,4 +1,4 @@
-package com.example.lockdown_diaries
+package com.navras.`in`
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

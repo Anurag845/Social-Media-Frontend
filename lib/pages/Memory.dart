@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:lockdown_diaries/pages/TrimmerPage.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/pages/TrimmerPage.dart';
+import 'package:navras/utils/Constants.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as imageLib;

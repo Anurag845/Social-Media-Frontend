@@ -1,12 +1,11 @@
-//created by Hatem Ragap
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:lockdown_diaries/models/NotificationModel.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/providers/AuthProvider.dart';
-import 'package:lockdown_diaries/providers/NotificationProvider.dart';
-import 'package:lockdown_diaries/widgets/NotificationItem.dart';
+import 'package:navras/models/NotificationModel.dart';
+import 'package:navras/models/UserModel.dart';
+import 'package:navras/providers/AuthProvider.dart';
+import 'package:navras/providers/NotificationProvider.dart';
+import 'package:navras/widgets/NotificationItem.dart';
 
 class NotificationPage extends StatefulWidget {
   @override

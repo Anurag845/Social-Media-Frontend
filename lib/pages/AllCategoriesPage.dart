@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:lockdown_diaries/models/CategoryModel.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/providers/AuthProvider.dart';
-import 'package:lockdown_diaries/providers/CategoryProvider.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/models/CategoryModel.dart';
+import 'package:navras/models/UserModel.dart';
+import 'package:navras/providers/AuthProvider.dart';
+import 'package:navras/providers/CategoryProvider.dart';
+import 'package:navras/utils/Constants.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 

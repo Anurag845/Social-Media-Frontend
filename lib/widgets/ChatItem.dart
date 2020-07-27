@@ -2,8 +2,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lockdown_diaries/models/ConversionModel.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/models/ConversionModel.dart';
+import 'package:navras/utils/Constants.dart';
 
 // ignore: must_be_immutable
 class ChatItem extends StatelessWidget {

@@ -1,18 +1,17 @@
-//created by Hatem Ragap
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:lockdown_diaries/models/ChatModel.dart';
-import 'package:lockdown_diaries/models/PostModel.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/pages/ChatMessagesPage.dart';
-import 'package:lockdown_diaries/pages/FullScreenImg.dart';
-import 'package:lockdown_diaries/providers/AuthProvider.dart';
-import 'package:lockdown_diaries/providers/Theme_provider.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/models/ChatModel.dart';
+import 'package:navras/models/PostModel.dart';
+import 'package:navras/models/UserModel.dart';
+import 'package:navras/pages/ChatMessagesPage.dart';
+import 'package:navras/pages/FullScreenImg.dart';
+import 'package:navras/providers/AuthProvider.dart';
+import 'package:navras/providers/Theme_provider.dart';
+import 'package:navras/utils/Constants.dart';
 import 'package:http/http.dart' as http;
-import 'package:lockdown_diaries/widgets/PostsPageItem.dart';
+import 'package:navras/widgets/PostsPageItem.dart';
 import 'dart:convert' as convert;
 
 // ignore: must_be_immutable

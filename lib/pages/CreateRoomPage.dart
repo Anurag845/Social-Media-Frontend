@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/utils/Constants.dart';
 import 'package:path/path.dart' as Path;
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -162,7 +162,7 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
               backgroundColor: Colors.white,
               textColor: Colors.black,
               fontSize: 16.0);
-        } 
+        }
         else {
           print('error! ' + jsonResponse);
 
@@ -175,7 +175,7 @@ class _CreateRoomPageState extends State<CreateRoomPage> {
               textColor: Colors.white,
               fontSize: 16.0);
         }
-      } 
+      }
       catch (err) {
         print(err);
 

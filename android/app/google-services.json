@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "614197198299",
-    "firebase_url": "https://lockdowndiaries-ae4e6.firebaseio.com",
-    "project_id": "lockdowndiaries-ae4e6",
-    "storage_bucket": "lockdowndiaries-ae4e6.appspot.com"
+    "project_number": "543032652651",
+    "firebase_url": "https://navras-8c4b1.firebaseio.com",
+    "project_id": "navras-8c4b1",
+    "storage_bucket": "navras-8c4b1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:614197198299:android:61ccb8db53d9755d997bfe",
+        "mobilesdk_app_id": "1:543032652651:android:3d28e5ebf08a128061122e",
         "android_client_info": {
-          "package_name": "com.ask.lockdown_diaries"
+          "package_name": "com.navras.in"
         }
       },
       "oauth_client": [
         {
-          "client_id": "614197198299-k8oa0k5vqvfqapldikaj2oe2qrrigg25.apps.googleusercontent.com",
+          "client_id": "543032652651-hvkmjlhknplcq5qb0kvda3u2gfp9o6un.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.navras.in",
+            "certificate_hash": "716f85f5bb5db5b5b6598cc11cf7f5d053c34972"
+          }
+        },
+        {
+          "client_id": "543032652651-qrf0dfjrq7gor2egskofbv5rdo9dc7jh.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCdZaKRr5HhlykNovPIfc7qhblH3tbLakA"
+          "current_key": "AIzaSyC-57dbdlfu3aNJIkW6iwbGtoyE_L04A6Q"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "614197198299-k8oa0k5vqvfqapldikaj2oe2qrrigg25.apps.googleusercontent.com",
+              "client_id": "543032652651-qrf0dfjrq7gor2egskofbv5rdo9dc7jh.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

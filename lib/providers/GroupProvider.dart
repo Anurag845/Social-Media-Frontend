@@ -3,9 +3,9 @@ import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
-import 'package:lockdown_diaries/models/GroupModel.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/models/GroupModel.dart';
+import 'package:navras/models/UserModel.dart';
+import 'package:navras/utils/Constants.dart';
 
 class GroupProvider with ChangeNotifier {
   List<GroupModel> _allusergroups = [];

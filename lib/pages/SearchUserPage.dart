@@ -4,14 +4,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/pages/PeerProfile.dart';
-import 'package:lockdown_diaries/providers/AuthProvider.dart';
-import 'package:lockdown_diaries/providers/Theme_provider.dart';
+import 'package:navras/models/UserModel.dart';
+import 'package:navras/pages/PeerProfile.dart';
+import 'package:navras/providers/AuthProvider.dart';
+import 'package:navras/providers/Theme_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/utils/Constants.dart';
 
 // ignore: must_be_immutable
 class SearchUserPage extends StatefulWidget {
@@ -173,7 +173,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
           _listUserModel = [];
           this.userModel = userModel;
         });
-      } 
+      }
       else {
         Fluttertoast.showToast(msg: 'please check the Name');
         setState(() {
@@ -181,7 +181,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
           userModel = null;
         });
       }
-    } 
+    }
     catch (err) {
       Fluttertoast.showToast(msg: 'please check your connection $err');
     }

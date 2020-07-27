@@ -1,4 +1,3 @@
-//created by Hatem Ragap
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:line_icons/line_icons.dart';
@@ -7,12 +6,12 @@ import 'dart:convert' as convert;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/pages/PeerProfile.dart';
-import 'package:lockdown_diaries/providers/AuthProvider.dart';
-import 'package:lockdown_diaries/providers/Theme_provider.dart';
-import 'package:lockdown_diaries/pages/WelcomePage.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/models/UserModel.dart';
+import 'package:navras/pages/PeerProfile.dart';
+import 'package:navras/providers/AuthProvider.dart';
+import 'package:navras/providers/Theme_provider.dart';
+import 'package:navras/pages/WelcomePage.dart';
+import 'package:navras/utils/Constants.dart';
 import 'UserChangePasswordPage.dart';
 import 'UpdateUserInfo.dart';
 

@@ -1,15 +1,17 @@
-//created by Hatem Ragap
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:navras/utils/Classes.dart';
 import 'package:provider/provider.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/pages/signup.dart';
-import 'package:lockdown_diaries/providers/AuthProvider.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/models/UserModel.dart';
+import 'package:navras/pages/signup.dart';
+import 'package:navras/providers/AuthProvider.dart';
+import 'package:navras/utils/Constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:lockdown_diaries/widgets/bezierContainer.dart';
+import 'package:navras/widgets/bezierContainer.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
@@ -25,6 +27,35 @@ class _LoginPageState extends State<LoginPage> {
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var url = '${Constants.SERVER_URL}user/login';
+
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn _googlSignIn = new GoogleSignIn();
+
+  _signIn() async {
+    final GoogleSignInAccount googleUser = await _googlSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth =await googleUser.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    FirebaseUser userDetails = (await _firebaseAuth.signInWithCredential(credential)).user;
+    ProviderDetails providerInfo = new ProviderDetails(userDetails.providerId);
+
+    List<ProviderDetails> providerData = new List<ProviderDetails>();
+    providerData.add(providerInfo);
+
+    UserDetails details = new UserDetails(
+      userDetails.providerId,
+      userDetails.displayName,
+      userDetails.photoUrl,
+      userDetails.email,
+      providerData,
+    );
+
+    print("Details are - " + details.userName);
+  }
 
   void startLogin(String email, String password) async {
     try {
@@ -59,10 +90,8 @@ class _LoginPageState extends State<LoginPage> {
         Provider.of<AuthProvider>(context, listen: false).userModel = myModel;
 
         saveData(myModel.userId, myModel.username, myModel.email, passwordController.text);
-
+        await _signIn();
         Navigator.of(context).pushNamed(Constants.HomePageRoute);
-
-        //Navigator.of(context).push(MaterialPageRoute(builder: (_) => Home()));
       }
     }
     catch (err) {

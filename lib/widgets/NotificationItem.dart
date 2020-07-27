@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:lockdown_diaries/models/NotificationModel.dart';
-import 'package:lockdown_diaries/models/PostModel.dart';
-import 'package:lockdown_diaries/pages/CommentsPage.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/models/NotificationModel.dart';
+import 'package:navras/models/PostModel.dart';
+import 'package:navras/pages/CommentsPage.dart';
+import 'package:navras/utils/Constants.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
 // ignore: must_be_immutable

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
+import 'package:navras/models/UserModel.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/utils/Constants.dart';
 
 class AuthProvider with ChangeNotifier {
   io.Socket socket;

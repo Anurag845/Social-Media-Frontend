@@ -1,11 +1,10 @@
-//created by Hatem Ragap
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
-import 'package:lockdown_diaries/providers/Theme_provider.dart';
+import 'package:navras/providers/Theme_provider.dart';
 // ignore: must_be_immutable
 class FullScreenImg extends StatelessWidget {
   String imgUrl;

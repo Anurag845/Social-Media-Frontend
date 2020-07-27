@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:lockdown_diaries/providers/AppBarProvider.dart';
-import 'package:lockdown_diaries/providers/Theme_provider.dart';
+import 'package:navras/providers/AppBarProvider.dart';
+import 'package:navras/providers/Theme_provider.dart';
 
 class HomeAppBar extends StatefulWidget implements PreferredSizeWidget {
   @override
@@ -41,16 +41,32 @@ class _HomeAppBarState extends State<HomeAppBar> {
     return SafeArea(
       child: Container(
         color: themeProvider.getThemeData.primaryColor,
-        child: Column(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Expanded(
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                padding: EdgeInsets.all(5),
+                margin: EdgeInsets.all(5),
+                child: Icon(
+                  Icons.android,
+                  size: 30,
+                ),
+              )
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Container(
+                padding: EdgeInsets.all(5),
+                margin: EdgeInsets.all(5),
+                child: Icon(
+                  Icons.search,
+                  size: 30,
+                ),
+              )
+            )
+                  /*Expanded(
                     flex: 1,
                     child: InkWell(
                         onTap: () {
@@ -129,17 +145,11 @@ class _HomeAppBarState extends State<HomeAppBar> {
                                   .getThemeData.accentIconTheme.color,
                           size: 26,
                         )),
-                  ),
+                  ),*/
                 ],
               ),
             ),
-            Divider(
-              thickness: 1,
-              color: Colors.grey,
-            )
-          ],
-        ),
-      ),
-    );
+
+      );
   }
 }

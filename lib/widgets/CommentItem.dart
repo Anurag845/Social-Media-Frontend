@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:lockdown_diaries/models/CommentsModel.dart';
-import 'package:lockdown_diaries/pages/PeerProfile.dart';
-import 'package:lockdown_diaries/providers/Theme_provider.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/models/CommentsModel.dart';
+import 'package:navras/pages/PeerProfile.dart';
+import 'package:navras/providers/Theme_provider.dart';
+import 'package:navras/utils/Constants.dart';
 
 // ignore: must_be_immutable
 class CommentItem extends StatefulWidget {

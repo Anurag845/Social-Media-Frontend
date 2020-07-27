@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:lockdown_diaries/models/NotificationModel.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/models/NotificationModel.dart';
+import 'package:navras/utils/Constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 

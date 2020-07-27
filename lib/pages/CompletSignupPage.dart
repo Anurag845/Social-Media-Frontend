@@ -1,4 +1,3 @@
-//created by Hatem Ragap
 import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:path/path.dart' as Path;
@@ -9,9 +8,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:async/async.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:lockdown_diaries/providers/AuthProvider.dart';
-import 'package:lockdown_diaries/providers/Theme_provider.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/providers/AuthProvider.dart';
+import 'package:navras/providers/Theme_provider.dart';
+import 'package:navras/utils/Constants.dart';
 
 import 'Home.dart';
 

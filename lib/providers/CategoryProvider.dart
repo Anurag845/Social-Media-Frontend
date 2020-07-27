@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:lockdown_diaries/models/CategoryModel.dart';
+import 'package:navras/models/CategoryModel.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/utils/Constants.dart';
 import 'dart:convert' as convert;
 
 class CategoryProvider with ChangeNotifier {

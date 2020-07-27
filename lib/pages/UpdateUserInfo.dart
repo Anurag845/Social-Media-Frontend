@@ -1,20 +1,19 @@
-//created by Hatem Ragap
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:provider/provider.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/providers/AuthProvider.dart';
-import 'package:lockdown_diaries/providers/Theme_provider.dart';
+import 'package:navras/models/UserModel.dart';
+import 'package:navras/providers/AuthProvider.dart';
+import 'package:navras/providers/Theme_provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:path/path.dart' as Path;
 import 'package:async/async.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/utils/Constants.dart';
 
 class UpdateUserInfo extends StatefulWidget {
   @override
@@ -188,7 +187,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
                 ],
               );
             });
-      } 
+      }
       else {
         String bio = jsonResponse['bio'];
         String userName = jsonResponse['user_name'];
@@ -197,7 +196,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
             .updateUserNameAndBio(userName, bio);
         Fluttertoast.showToast(msg: 'Done');
       }
-    } 
+    }
     catch (err) {
       showDialog(
           context: context,
@@ -214,7 +213,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
               ],
             );
           });
-    } 
+    }
     finally {
       setState(() {
         currentLoading = 0;

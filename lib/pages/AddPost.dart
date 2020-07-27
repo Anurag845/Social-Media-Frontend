@@ -1,15 +1,14 @@
-//created by Hatem Ragap
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:navras/customAppBars/AddPostAppBar.dart';
+import 'package:navras/models/UserModel.dart';
+import 'package:navras/providers/AuthProvider.dart';
+import 'package:navras/providers/PostProvider.dart';
+import 'package:navras/providers/Theme_provider.dart';
+import 'package:navras/utils/Constants.dart';
 import 'package:provider/provider.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/providers/AuthProvider.dart';
-import 'package:lockdown_diaries/providers/PostProvider.dart';
-import 'package:lockdown_diaries/providers/Theme_provider.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
-import 'package:lockdown_diaries/customAppBars/AddPostAppBar.dart';
 import 'dart:io';
 import 'package:path/path.dart' as Path;
 import 'package:http/http.dart' as http;

@@ -1,16 +1,15 @@
-//created by Hatem Ragap
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/pages/CompletSignupPage.dart';
-import 'package:lockdown_diaries/pages/LoginPage.dart';
-import 'package:lockdown_diaries/providers/AuthProvider.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/models/UserModel.dart';
+import 'package:navras/pages/CompletSignupPage.dart';
+import 'package:navras/pages/LoginPage.dart';
+import 'package:navras/providers/AuthProvider.dart';
+import 'package:navras/utils/Constants.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:lockdown_diaries/widgets/bezierContainer.dart';
+import 'package:navras/widgets/bezierContainer.dart';
 
 
 class SignUpPage extends StatefulWidget {

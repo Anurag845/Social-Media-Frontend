@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:lockdown_diaries/models/ConversionModel.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/models/ConversionModel.dart';
+import 'package:navras/models/UserModel.dart';
+import 'package:navras/utils/Constants.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
 class ConversionProvider with ChangeNotifier {
@@ -104,11 +104,11 @@ class ConversionProvider with ChangeNotifier {
           _conversionList = temp;
           temp = null;
           notifyListeners();
-        } 
+        }
         else {
           print("Conversions provider"+res);
         }
-      } 
+      }
       catch (err) {
         print("Conversions provider"+err.toString());
       }
@@ -128,12 +128,12 @@ class ConversionProvider with ChangeNotifier {
           user.isOnline = false;
         });
         notifyListeners();
-      } 
+      }
       else {
         _conversionList.forEach((user) {
           if (res.contains(user.userId)) {
             user.isOnline = true;
-          } 
+          }
           else {
             user.isOnline = false;
           }

@@ -1,5 +1,3 @@
-//created by Hatem Ragap
-
 import 'dart:async';
 import 'dart:io';
 
@@ -7,19 +5,19 @@ import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:lockdown_diaries/models/CommentsModel.dart';
-import 'package:lockdown_diaries/models/PostModel.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
+import 'package:navras/models/CommentsModel.dart';
+import 'package:navras/models/PostModel.dart';
+import 'package:navras/models/UserModel.dart';
 
-import 'package:lockdown_diaries/providers/AuthProvider.dart';
+import 'package:navras/providers/AuthProvider.dart';
 import 'package:http/http.dart' as http;
-import 'package:lockdown_diaries/providers/PostProvider.dart';
-import 'package:lockdown_diaries/providers/Theme_provider.dart';
+import 'package:navras/providers/PostProvider.dart';
+import 'package:navras/providers/Theme_provider.dart';
 import 'dart:convert' as convert;
 
-import 'package:lockdown_diaries/utils/Constants.dart';
-import 'package:lockdown_diaries/widgets/CommentItem.dart';
-import 'package:lockdown_diaries/widgets/PostsPageItem.dart';
+import 'package:navras/utils/Constants.dart';
+import 'package:navras/widgets/CommentItem.dart';
+import 'package:navras/widgets/PostsPageItem.dart';
 
 // ignore: must_be_immutable
 class CommentsPage extends StatefulWidget {
@@ -70,7 +68,7 @@ class _CommentsPageState extends State<CommentsPage> {
   String getInterstitialAdUnitId() {
     if (Platform.isIOS) {
       return Constants.InterstitialAdUnitIdIOS;
-    } 
+    }
     else if (Platform.isAndroid) {
       return Constants.InterstitialAdUnitIdAndroid;
     }

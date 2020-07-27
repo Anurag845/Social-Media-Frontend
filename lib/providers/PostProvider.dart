@@ -4,8 +4,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:flutter/material.dart';
-import 'package:lockdown_diaries/models/PostModel.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/models/PostModel.dart';
+import 'package:navras/utils/Constants.dart';
 
 class PostProvider with ChangeNotifier {
   List<PostModel> _postModelList = [];

@@ -1,30 +1,33 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:lockdown_diaries/pages/CaptureTalentVideo2.dart';
-import 'package:lockdown_diaries/pages/slider.dart';
-import 'package:lockdown_diaries/providers/CategoryProvider.dart';
-import 'package:lockdown_diaries/providers/GroupProvider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:navras/pages/CaptureTalentVideo2.dart';
+import 'package:navras/pages/slider.dart';
+import 'package:navras/providers/CategoryProvider.dart';
+import 'package:navras/providers/GroupProvider.dart';
+import 'package:navras/utils/Classes.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
-import 'package:lockdown_diaries/models/ChatModel.dart';
-import 'package:lockdown_diaries/models/PostModel.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/pages/ChatMessagesPage.dart';
-import 'package:lockdown_diaries/pages/CommentsPage.dart';
-import 'package:lockdown_diaries/pages/GroupChatsPage.dart';
-import 'package:lockdown_diaries/pages/PersonalChatsPage.dart';
+import 'package:navras/models/ChatModel.dart';
+import 'package:navras/models/PostModel.dart';
+import 'package:navras/models/UserModel.dart';
+import 'package:navras/pages/ChatMessagesPage.dart';
+import 'package:navras/pages/CommentsPage.dart';
+import 'package:navras/pages/GroupChatsPage.dart';
+import 'package:navras/pages/PersonalChatsPage.dart';
 import 'dart:convert' as convert;
-import 'package:lockdown_diaries/providers/AppBarProvider.dart';
-import 'package:lockdown_diaries/providers/AuthProvider.dart';
+import 'package:navras/providers/AppBarProvider.dart';
+import 'package:navras/providers/AuthProvider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
-import 'package:lockdown_diaries/providers/PostProvider.dart';
-import 'package:lockdown_diaries/providers/Theme_provider.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
-import 'package:lockdown_diaries/customAppBars/HomeAppBar.dart';
+import 'package:navras/providers/PostProvider.dart';
+import 'package:navras/providers/Theme_provider.dart';
+import 'package:navras/utils/Constants.dart';
+import 'package:navras/customAppBars/HomeAppBar.dart';
 import 'Notifictionpage.dart';
 import 'PostsPage.dart';
 import 'Settings.dart';
@@ -52,6 +55,35 @@ class _HomeState extends State<Home> {
   List<Widget> options = [];
 
   SolidController _controller = SolidController();
+
+  /*final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn _googlSignIn = new GoogleSignIn();
+
+  _signIn() async {
+    final GoogleSignInAccount googleUser = await _googlSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth =await googleUser.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    FirebaseUser userDetails = (await _firebaseAuth.signInWithCredential(credential)).user;
+    ProviderDetails providerInfo = new ProviderDetails(userDetails.providerId);
+
+    List<ProviderDetails> providerData = new List<ProviderDetails>();
+    providerData.add(providerInfo);
+
+    UserDetails details = new UserDetails(
+      userDetails.providerId,
+      userDetails.displayName,
+      userDetails.photoUrl,
+      userDetails.email,
+      providerData,
+    );
+
+    print("Details are - " + details.userName);
+  }*/
 
   @override
   void initState() {
@@ -139,6 +171,7 @@ class _HomeState extends State<Home> {
     initSocket();
     registerNotification();
     configLocalNotification();
+    //_signIn();
   }
 
   @override
@@ -358,7 +391,7 @@ class _HomeState extends State<Home> {
   void showNotification(message, message2) async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
       Platform.isAndroid
-          ? 'com.hatem.lockdown_diaries'
+          ? 'com.hatem.navras'
           : 'com.duytq.flutterchatdemo',
       'Flutter chat demo',
       'your channel description',

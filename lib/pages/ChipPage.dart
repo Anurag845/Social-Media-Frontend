@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lockdown_diaries/models/CategoryModel.dart';
-import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/providers/AuthProvider.dart';
-import 'package:lockdown_diaries/providers/CategoryProvider.dart';
+import 'package:navras/models/CategoryModel.dart';
+import 'package:navras/models/UserModel.dart';
+import 'package:navras/providers/AuthProvider.dart';
+import 'package:navras/providers/CategoryProvider.dart';
 import 'package:provider/provider.dart';
 
 class ChoiceChipDisplay extends StatefulWidget {

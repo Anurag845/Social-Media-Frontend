@@ -141,6 +141,30 @@ class _TalentVideoPreviewState extends State<TalentVideoPreview> {
                         )
                       ],
                     ),
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      child: _controller.videoInfo == null
+                      ? Container()
+                      : _controller.videoInfo.isPlaying
+                      ? IconButton(
+                        icon: Icon(
+                          Icons.pause
+                        ),
+                        onPressed: () {
+                          _controller.pause();
+                        },
+                      )
+                      : IconButton(
+                        icon: Icon(
+                          Icons.play_arrow
+                        ),
+                        onPressed: () {
+                          _controller.play();
+                        },
+                      )
+                    ),
                   )
                 ],
               ),

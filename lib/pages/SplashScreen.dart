@@ -1,15 +1,16 @@
-//created by Hatem Ragap
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lockdown_diaries/utils/Classes.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:navras/utils/Classes.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:lockdown_diaries/models/UserModel.dart';
-import 'package:lockdown_diaries/pages/WelcomePage.dart';
-import 'package:lockdown_diaries/providers/AuthProvider.dart';
-import 'package:lockdown_diaries/providers/Theme_provider.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/models/UserModel.dart';
+import 'package:navras/pages/WelcomePage.dart';
+import 'package:navras/providers/AuthProvider.dart';
+import 'package:navras/providers/Theme_provider.dart';
+import 'package:navras/utils/Constants.dart';
 import 'dart:convert' as convert;
 
 class SplashScreen extends StatefulWidget {
@@ -18,6 +19,36 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn _googlSignIn = new GoogleSignIn();
+
+  _signIn() async {
+    final GoogleSignInAccount googleUser = await _googlSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth =await googleUser.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    FirebaseUser userDetails = (await _firebaseAuth.signInWithCredential(credential)).user;
+    ProviderDetails providerInfo = new ProviderDetails(userDetails.providerId);
+
+    List<ProviderDetails> providerData = new List<ProviderDetails>();
+    providerData.add(providerInfo);
+
+    UserDetails details = new UserDetails(
+      userDetails.providerId,
+      userDetails.displayName,
+      userDetails.photoUrl,
+      userDetails.email,
+      providerData,
+    );
+
+    print("Details are - " + details.userName);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -25,21 +56,17 @@ class _SplashScreenState extends State<SplashScreen> {
     initFilterEffects();
     new Future.delayed(const Duration(milliseconds: 2500), () async {
       //check if email is save to start login if not Navigate to WelcomePage
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
+      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
       String email = sharedPreferences.getString('email');
       String password = sharedPreferences.getString('password');
-
-      //print("Splashscreen:- email " + email + " password " + password);
 
       if (email != null && password != null) {
         startLogin(email, password);
       }
       else {
-        Navigator.of(context).pushNamedAndRemoveUntil(Constants.WelcomePageRoute, (route) => false);
-        /*Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (BuildContext context) => WelcomePage()),
-            (Route<dynamic> route) => false);*/
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          Constants.WelcomePageRoute, (route) => false
+        );
       }
     });
   }
@@ -57,10 +84,9 @@ class _SplashScreenState extends State<SplashScreen> {
       bool error = jsonResponse['error'];
 
       if (error) {
-        Navigator.of(context).pushNamedAndRemoveUntil(Constants.WelcomePageRoute, (route) => false);
-        /*Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (BuildContext context) => WelcomePage()),
-            (Route<dynamic> route) => false);*/
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          Constants.WelcomePageRoute, (route) => false
+        );
       }
       else {
         var userData = jsonResponse['data'];
@@ -69,11 +95,8 @@ class _SplashScreenState extends State<SplashScreen> {
         Provider.of<AuthProvider>(context, listen: false).userModel = myModel;
 
         print("Login done - going to Home");
+        await _signIn();
         Navigator.of(context).pushNamedAndRemoveUntil(Constants.HomePageRoute, (route) => false);
-
-        /*Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (BuildContext context) => Home()),
-            (Route<dynamic> route) => false);*/
       }
     }
     catch (err) {
@@ -93,7 +116,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Center(
           child: Container(
             height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(
+            /*decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5)),
               boxShadow: <BoxShadow>[
                 BoxShadow(
@@ -108,7 +131,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 end: Alignment.bottomCenter,
                 colors: [Color(0xfffbb448), Color(0xffe46b10)]
               )
-            ),
+            ),*/
+            color: Colors.white,
             width: MediaQuery.of(context).size.width,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -118,27 +142,31 @@ class _SplashScreenState extends State<SplashScreen> {
                 Container(),
                 Container(),
                 Container(
+                  padding: EdgeInsets.all(70),
+                  alignment: Alignment.center,
                   child: Image.asset(
-                    'assets/images/logo2.png',
-                    height: 200,
-                    width: 200,
-                    fit: BoxFit.cover,
+                    'assets/images/logo.jpeg',
+                    //height: 200,
+                    //width: 200,
+                    //fit: BoxFit.cover,
                   ),
                 ),
                 SizedBox(
                   height: 20,
                 ),
-                Text(
-                  'please wait while check login',
+                /*Text(
+                  '',
                   style: GoogleFonts.roboto(
-                      fontSize: 20, fontWeight: FontWeight.w600),
-                ),
+                    fontSize: 20, fontWeight: FontWeight.w600
+                  ),
+                ),*/
                 Container(
-                    padding: EdgeInsets.all(15),
-                    child: CircularProgressIndicator(
-                      strokeWidth: 6,
-                      backgroundColor: Colors.green,
-                    ))
+                  padding: EdgeInsets.all(15),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 6,
+                    backgroundColor: Colors.green,
+                  )
+                )
               ],
             ),
           ),

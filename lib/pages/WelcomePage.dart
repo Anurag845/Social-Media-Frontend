@@ -1,10 +1,9 @@
-//created by Hatem Ragap
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lockdown_diaries/utils/Constants.dart';
+import 'package:navras/utils/Constants.dart';
 import 'package:provider/provider.dart';
-import 'package:lockdown_diaries/pages/signup.dart';
-import 'package:lockdown_diaries/providers/Theme_provider.dart';
+import 'package:navras/pages/signup.dart';
+import 'package:navras/providers/Theme_provider.dart';
 
 class WelcomePage extends StatefulWidget {
   WelcomePage({Key key, this.title}) : super(key: key);
