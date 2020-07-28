@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:navras/models/GoogleUserModel.dart';
+import 'package:navras/pages/SignInWithGoogle.dart';
 import 'package:navras/utils/Classes.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,52 +25,67 @@ class _SplashScreenState extends State<SplashScreen> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googlSignIn = new GoogleSignIn();
 
-  _signIn() async {
-    final GoogleSignInAccount googleUser = await _googlSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth =await googleUser.authentication;
-
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    FirebaseUser userDetails = (await _firebaseAuth.signInWithCredential(credential)).user;
-    ProviderDetails providerInfo = new ProviderDetails(userDetails.providerId);
-
-    List<ProviderDetails> providerData = new List<ProviderDetails>();
-    providerData.add(providerInfo);
-
-    UserDetails details = new UserDetails(
-      userDetails.providerId,
-      userDetails.displayName,
-      userDetails.photoUrl,
-      userDetails.email,
-      providerData,
-    );
-
-    print("Details are - " + details.userName);
-  }
-
   @override
   void initState() {
     super.initState();
     checkTheme();
     initFilterEffects();
-    new Future.delayed(const Duration(milliseconds: 2500), () async {
-      //check if email is save to start login if not Navigate to WelcomePage
-      SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-      String email = sharedPreferences.getString('email');
-      String password = sharedPreferences.getString('password');
+    Future.delayed(Duration(milliseconds: 2000), () async {
+      _handleGoogleSignIn();
+      _handleNavrasSignIn();
+    });
+  }
 
-      if (email != null && password != null) {
-        startLogin(email, password);
-      }
-      else {
+  _handleGoogleSignIn() async {
+    bool isSignedIn = await _googlSignIn.isSignedIn();
+    if(isSignedIn) {
+      final GoogleSignInAccount googleUser = await _googlSignIn.signInSilently();
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      FirebaseUser userDetails = (await _firebaseAuth.signInWithCredential(credential)).user;
+      ProviderDetails providerInfo = new ProviderDetails(userDetails.providerId);
+
+      List<ProviderDetails> providerData = new List<ProviderDetails>();
+      providerData.add(providerInfo);
+
+      GoogleUserModel googleUserModel = GoogleUserModel(
+        userDetails.displayName, userDetails.email, userDetails.photoUrl
+      );
+
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        Provider.of<AuthProvider>(context, listen: false).setGoogleUserModel(googleUserModel);
+      });
+    }
+    else {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => SignInWithGoogle()),
+          (route) => false
+        );
+      });
+    }
+  }
+
+  _handleNavrasSignIn() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String email = sharedPreferences.getString('email');
+    String password = sharedPreferences.getString('password');
+
+    if (email != null && password != null) {
+      startLogin(email, password);
+    }
+    else {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         Navigator.of(context).pushNamedAndRemoveUntil(
           Constants.WelcomePageRoute, (route) => false
         );
-      }
-    });
+      });
+    }
   }
 
   void startLogin(String email, String password) async {
@@ -84,26 +101,35 @@ class _SplashScreenState extends State<SplashScreen> {
       bool error = jsonResponse['error'];
 
       if (error) {
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          Constants.WelcomePageRoute, (route) => false
-        );
+        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            Constants.WelcomePageRoute, (route) => false
+          );
+        });
       }
       else {
         var userData = jsonResponse['data'];
         UserModel myModel = UserModel.fromJson(userData);
         //make my model usable to all widgets
-        Provider.of<AuthProvider>(context, listen: false).userModel = myModel;
+        Provider.of<AuthProvider>(context, listen: false).setUserModel(myModel);
 
         print("Login done - going to Home");
-        await _signIn();
-        Navigator.of(context).pushNamedAndRemoveUntil(Constants.HomePageRoute, (route) => false);
+
+        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            Constants.HomePageRoute, (route) => false
+          );
+        });
       }
     }
     catch (err) {
       //case error (No internet connection) move to WelcomePage
-      Navigator.of(context).pushAndRemoveUntil(
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => WelcomePage()),
-          (Route<dynamic> route) => false);
+          (Route<dynamic> route) => false
+        );
+      });
     }
   }
 

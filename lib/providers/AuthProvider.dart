@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navras/models/GoogleUserModel.dart';
 import 'package:navras/models/UserModel.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:navras/utils/Constants.dart';
@@ -8,12 +9,20 @@ class AuthProvider with ChangeNotifier {
 
   UserModel _userModel;
 
-  // ignore: unnecessary_getters_setters
+  GoogleUserModel _googleUserModel;
+
   UserModel get userModel => _userModel;
 
-  // ignore: unnecessary_getters_setters
-  set userModel(UserModel value) {
+  GoogleUserModel get googleUserModel => _googleUserModel;
+
+  setUserModel(UserModel value) {
     _userModel = value;
+    notifyListeners();
+  }
+
+  setGoogleUserModel(GoogleUserModel model) {
+    _googleUserModel = model;
+    notifyListeners();
   }
 
   void updateImg(String img) {

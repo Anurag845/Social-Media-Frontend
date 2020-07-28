@@ -1,4 +1,3 @@
-//created by Hatem Ragap
 class ConversionModel {
   String chatId;
   String userName;

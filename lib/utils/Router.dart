@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:navras/pages/CaptureTalentVideo.dart';
 import 'package:navras/pages/CreatePost.dart';
+import 'package:navras/pages/CreateProfile.dart';
 import 'package:navras/pages/Home.dart';
 import 'package:navras/pages/Location.dart';
 import 'package:navras/pages/LoginPage.dart';
@@ -8,6 +9,7 @@ import 'package:navras/pages/Memory.dart';
 import 'package:navras/pages/Moment.dart';
 import 'package:navras/pages/MomentPreview.dart';
 import 'package:navras/pages/PhotoEditor.dart';
+import 'package:navras/pages/SignInWithGoogle.dart';
 import 'package:navras/pages/SplashScreen.dart';
 import 'package:navras/pages/TalentVideoPreview.dart';
 import 'package:navras/pages/VideoEffectsPage.dart';
@@ -17,6 +19,10 @@ import 'package:navras/utils/Constants.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
+    case Constants.GoogleSignInPageRoute:
+      return MaterialPageRoute(builder: (context) => SignInWithGoogle());
+    case Constants.CreateProfilePageRoute:
+      return MaterialPageRoute(builder: (context) => CreateProfile());
     case Constants.HomePageRoute:
       return MaterialPageRoute(builder: (context) => Home());
     case Constants.SplashScreenRoute:

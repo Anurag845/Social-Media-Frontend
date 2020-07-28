@@ -1,4 +1,3 @@
-//created by Hatem Ragap
 import 'dart:convert';
 
 class UserModel {

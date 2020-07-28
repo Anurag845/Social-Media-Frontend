@@ -1,3 +1,4 @@
+import 'package:navras/pages/SignInWithGoogle.dart';
 import 'package:navras/utils/Classes.dart';
 
 class Constants {
@@ -16,6 +17,8 @@ class Constants {
   static const SOCKET_URL = 'http://$IP:$PORT';
 
 
+  static const GoogleSignInPageRoute = 'googlesignin';
+  static const CreateProfilePageRoute = 'createprofile';
   static const HomePageRoute = 'home';
   static const PostsPageRoute = 'landingpage';
   static const AllGroupsPageRoute = 'allgroups';

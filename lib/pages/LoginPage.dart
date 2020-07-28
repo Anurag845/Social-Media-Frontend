@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:navras/models/GoogleUserModel.dart';
 import 'package:navras/utils/Classes.dart';
 import 'package:provider/provider.dart';
 import 'package:navras/models/UserModel.dart';
-import 'package:navras/pages/signup.dart';
 import 'package:navras/providers/AuthProvider.dart';
 import 'package:navras/utils/Constants.dart';
 import 'package:http/http.dart' as http;
@@ -46,15 +46,13 @@ class _LoginPageState extends State<LoginPage> {
     List<ProviderDetails> providerData = new List<ProviderDetails>();
     providerData.add(providerInfo);
 
-    UserDetails details = new UserDetails(
-      userDetails.providerId,
+    GoogleUserModel googleUserModel = GoogleUserModel(
       userDetails.displayName,
-      userDetails.photoUrl,
       userDetails.email,
-      providerData,
+      userDetails.photoUrl
     );
 
-    print("Details are - " + details.userName);
+    Provider.of<AuthProvider>(context, listen: false).setGoogleUserModel(googleUserModel);
   }
 
   void startLogin(String email, String password) async {
@@ -87,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
         var userData = jsonResponse['data'];
         UserModel myModel = UserModel.fromJson(userData);
         //make my model usable to all widgets
-        Provider.of<AuthProvider>(context, listen: false).userModel = myModel;
+        Provider.of<AuthProvider>(context, listen: false).setUserModel(myModel);
 
         saveData(myModel.userId, myModel.username, myModel.email, passwordController.text);
         await _signIn();
@@ -213,8 +211,8 @@ class _LoginPageState extends State<LoginPage> {
           ),
           InkWell(
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SignUpPage()));
+              /*Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SignUpPage()));*/
             },
             child: Text(
               'Register',

@@ -88,10 +88,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: themeProvider.getThemeData,
       home: SplashScreen(),
-      title: 'v chat app',
+      title: 'Navras',
       debugShowCheckedModeBanner: false,
       onGenerateRoute: router.generateRoute,
-      initialRoute: Constants.SplashScreenRoute
+      initialRoute: Constants.CreateProfilePageRoute
     );
   }
 }

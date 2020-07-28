@@ -10,5 +10,6 @@ class ShaderMaskProvider extends ChangeNotifier {
 
   updateFilter(Filter updatedFilter) {
     _filter = updatedFilter;
+    notifyListeners();
   }
 }
