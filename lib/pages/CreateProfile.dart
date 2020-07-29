@@ -297,6 +297,7 @@ class _SignUpPageState extends State<SignUpPage> {
 }*/
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:navras/models/GoogleUserModel.dart';
 import 'package:navras/providers/AuthProvider.dart';
@@ -319,7 +320,8 @@ class _CreateProfileState extends State<CreateProfile> {
   DateTime _birthDate;
   TimeOfDay _birthTime;
 
-  bool passwordVisible = false;
+  bool passwordVisible = true;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -329,235 +331,261 @@ class _CreateProfileState extends State<CreateProfile> {
 
   @override
   Widget build(BuildContext context) {
-        return Scaffold(
-          body: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
+    return Scaffold(
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: <Widget>[
+            Stack(
               children: <Widget>[
-                Stack(
-                  children: <Widget>[
-                    Container(
-                      height: 134,
-                      width: double.infinity,
-                      child: Image.asset("assets/images/blurred_bubbles.jpg"),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        margin: EdgeInsets.only(top: 94),
-                        child: CircleAvatar(
-                          radius: 40,
-                          //backgroundImage: NetworkImage(_googleUserModel.photoUrl),
-                          backgroundColor: Colors.transparent,
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        margin: EdgeInsets.only(top: 182),
-                        child: Text(
-                          "_googleUserModel.userName",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                    )
-                  ],
+                Container(
+                  height: 134,
+                  width: double.infinity,
+                  child: Image.asset("assets/images/blurred_bubbles.jpg"),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Text(
-                    "Create your Profile",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
-                  )
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    margin: EdgeInsets.only(top: 94),
+                    child: CircleAvatar(
+                      radius: 40,
+                      //backgroundImage: NetworkImage(_googleUserModel.photoUrl),
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
                 ),
-                Form(
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Container(
-                              width: MediaQuery.of(context).size.width/3-8,
-                              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                              child: Text(
-                                "Username",
-                                overflow: TextOverflow.fade,
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                            Container(
-                              width: 2*MediaQuery.of(context).size.width/3-30,
-                              child: TextFormField(
-                                controller: _usernameController,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                  enabledBorder: const UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.grey, width: 0.0),
-                                  ),
-                                  focusedBorder: const UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.black, width: 0.0),
-                                  ),
-                                  hintText: "Username"
-                                ),
-                              ),
-                            )
-                          ],
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    margin: EdgeInsets.only(top: 182),
+                    child: Text(
+                      "_googleUserModel.userName",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                "Create your Profile",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+              )
+            ),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width/3-8,
+                          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          child: Text(
+                            "Username",
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Container(
-                              width: MediaQuery.of(context).size.width/3-8,
-                              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                              child: Text(
-                                "Password",
-                                overflow: TextOverflow.fade,
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.left,
+                        Container(
+                          width: 2*MediaQuery.of(context).size.width/3-30,
+                          child: TextFormField(
+                            controller: _usernameController,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.grey, width: 0.0),
                               ),
-                            ),
-                            Container(
-                              width: 2*MediaQuery.of(context).size.width/3-30,
-                              child: TextFormField(
-                                controller: _passwordController,
-                                textAlignVertical: TextAlignVertical.center,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                  enabledBorder: const UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.grey, width: 0.0),
-                                  ),
-                                  focusedBorder: const UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.black, width: 0.0),
-                                  ),
-                                  hintText: "Password",
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      passwordVisible ?
-                                      Icons.visibility_off :
-                                      Icons.visibility
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        passwordVisible = !passwordVisible;
-                                      });
-                                    },
-                                    color: Colors.black,
-                                  )
-                                ),
-                                obscureText: passwordVisible,
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.black, width: 0.0),
                               ),
+                              hintText: "Username"
                             ),
-                          ],
+                            validator: (value) {
+                              if(value.isEmpty)
+                                return "Please enter username";
+                              else
+                                return null;
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width/3-8,
+                          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          child: Text(
+                            "Password",
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Container(
-                              width: MediaQuery.of(context).size.width/3-8,
-                              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                              child: Text(
-                                "Gender",
-                                overflow: TextOverflow.fade,
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.left,
+                        Container(
+                          width: 2*MediaQuery.of(context).size.width/3-30,
+                          child: TextFormField(
+                            controller: _passwordController,
+                            textAlignVertical: TextAlignVertical.center,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.grey, width: 0.0),
                               ),
-                            ),
-                            Container(
-                              width: 2*MediaQuery.of(context).size.width/3-30,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  Radio(
-                                    value: "Male",
-                                    groupValue: _genderValue,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _genderValue = value;
-                                      });
-                                    },
-                                    activeColor: Colors.purple,
-                                  ),
-                                  Text("Male"),
-                                  Radio(
-                                    value: "Female",
-                                    groupValue: _genderValue,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _genderValue = value;
-                                      });
-                                    },
-                                    activeColor: Colors.purple,
-                                  ),
-                                  Text("Female")
-                                ],
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.black, width: 0.0),
+                              ),
+                              hintText: "Password",
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    passwordVisible = !passwordVisible;
+                                  });
+                                },
+                                color: Colors.black,
                               )
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Container(
-                              width: MediaQuery.of(context).size.width/3-8,
-                              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                              child: Text(
-                                "I was born in",
-                                overflow: TextOverflow.fade,
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.left,
-                              ),
                             ),
-                            Container(
-                              width: 2*MediaQuery.of(context).size.width/3-30,
-                              child: TextFormField(
-                                controller: _birthplaceController,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                  enabledBorder: const UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.grey, width: 0.0),
-                                  ),
-                                  focusedBorder: const UnderlineInputBorder(
-                                    borderSide: const BorderSide(color: Colors.black, width: 0.0),
-                                  ),
-                                  hintText: "Birth Place"
-                                ),
-                              ),
-                            )
-                          ],
+                            obscureText: passwordVisible,
+                            validator: (value) {
+                              if(value.isEmpty) {
+                                return "Please enter password";
+                              }
+                              else if(value.length < 8) {
+                                return "Password should be minimum 8 characters long";
+                              }
+                              else {
+                                return null;
+                              }
+                            },
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Container(
-                              width: MediaQuery.of(context).size.width/3-8,
-                              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                              child: Text(
-                                "On",
-                                overflow: TextOverflow.fade,
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.left,
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width/3-8,
+                          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          child: Text(
+                            "Gender",
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                        Container(
+                          width: 2*MediaQuery.of(context).size.width/3-30,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              Radio(
+                                value: "Male",
+                                groupValue: _genderValue,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _genderValue = value;
+                                  });
+                                },
+                                activeColor: Colors.purple,
                               ),
+                              Text("Male"),
+                              Radio(
+                                value: "Female",
+                                groupValue: _genderValue,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _genderValue = value;
+                                  });
+                                },
+                                activeColor: Colors.purple,
+                              ),
+                              Text("Female")
+                            ],
+                          )
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width/3-8,
+                          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          child: Text(
+                            "I was born in",
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                        Container(
+                          width: 2*MediaQuery.of(context).size.width/3-30,
+                          child: TextFormField(
+                            controller: _birthplaceController,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.black, width: 0.0),
+                              ),
+                              hintText: "Birth Place"
                             ),
-                            Container(
-                              width: 2*MediaQuery.of(context).size.width/3-30,
-                              child: TextFormField(
-                                controller: _birthdateController,
+                            validator: (value) {
+                              if(value.isEmpty) {
+                                return "Please enter birth place";
+                              }
+                              else{
+                                return null;
+                              }
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width/3-8,
+                          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          child: Text(
+                            "On",
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                        Container(
+                          width: 2*MediaQuery.of(context).size.width/3-30,
+                          child: TextFormField(
+                            controller: _birthdateController,
                             readOnly: true,
                             textAlignVertical: TextAlignVertical.center,
                             decoration: InputDecoration(
@@ -590,6 +618,14 @@ class _CreateProfileState extends State<CreateProfile> {
                                 }
                               )
                             ),
+                            validator: (value) {
+                              if(value.isEmpty) {
+                                return "Please enter birth date";
+                              }
+                              else {
+                                return null;
+                              }
+                            },
                           ),
                         )
                       ],
@@ -650,20 +686,28 @@ class _CreateProfileState extends State<CreateProfile> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(30),
-                    child: FlatButton(
+                    padding: const EdgeInsets.all(40),
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(30.0),
+                      ),
                       color: Colors.purple,
-                      child: Text(
-                        "Create",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white
+                      //minWidth: MediaQuery.of(context).size.width,
+                      onPressed: () {
+                        if(_formKey.currentState.validate()) {
+                          Fluttertoast.showToast(msg: "Form validated " + _usernameController.text);
+                        }
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(50, 10, 50, 10),
+                        child: Text(
+                          "Create",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white
+                          ),
                         ),
                       ),
-                      onPressed: () {
-
-                      },
                     ),
                   )
                 ],
