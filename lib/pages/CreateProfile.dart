@@ -300,7 +300,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:navras/models/GoogleUserModel.dart';
+import 'package:navras/pages/ExpressList.dart';
 import 'package:navras/providers/AuthProvider.dart';
+import 'package:navras/utils/Constants.dart';
 import 'package:provider/provider.dart';
 
 class CreateProfile extends StatefulWidget {
@@ -407,10 +409,12 @@ class _CreateProfileState extends State<CreateProfile> {
                               hintText: "Username"
                             ),
                             validator: (value) {
-                              if(value.isEmpty)
+                              if(value.isEmpty) {
                                 return "Please enter username";
-                              else
+                              }
+                              else {
                                 return null;
+                              }
                             },
                           ),
                         )
@@ -486,7 +490,7 @@ class _CreateProfileState extends State<CreateProfile> {
                           width: MediaQuery.of(context).size.width/3-8,
                           padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
                           child: Text(
-                            "Gender",
+                            "I am a",
                             overflow: TextOverflow.fade,
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.left,
@@ -692,10 +696,19 @@ class _CreateProfileState extends State<CreateProfile> {
                         borderRadius: new BorderRadius.circular(30.0),
                       ),
                       color: Colors.purple,
-                      //minWidth: MediaQuery.of(context).size.width,
                       onPressed: () {
                         if(_formKey.currentState.validate()) {
-                          Fluttertoast.showToast(msg: "Form validated " + _usernameController.text);
+                          if(_genderValue == null) {
+                            Fluttertoast.showToast(msg: "Please select gender");
+                          }
+                          else {
+
+                            //proceed further
+
+                            Navigator.of(context).pushNamed(
+                              Constants.ExpressListPageRoute
+                            );
+                          }
                         }
                       },
                       child: Padding(

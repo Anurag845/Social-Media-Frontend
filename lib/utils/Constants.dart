@@ -19,6 +19,7 @@ class Constants {
 
   static const GoogleSignInPageRoute = 'googlesignin';
   static const CreateProfilePageRoute = 'createprofile';
+  static const ExpressListPageRoute = 'expresslist';
   static const HomePageRoute = 'home';
   static const PostsPageRoute = 'landingpage';
   static const AllGroupsPageRoute = 'allgroups';

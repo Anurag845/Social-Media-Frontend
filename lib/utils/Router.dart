@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:navras/pages/CaptureTalentVideo.dart';
 import 'package:navras/pages/CreatePost.dart';
 import 'package:navras/pages/CreateProfile.dart';
+import 'package:navras/pages/ExpressList.dart';
 import 'package:navras/pages/Home.dart';
 import 'package:navras/pages/Location.dart';
 import 'package:navras/pages/LoginPage.dart';
@@ -23,6 +24,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => SignInWithGoogle());
     case Constants.CreateProfilePageRoute:
       return MaterialPageRoute(builder: (context) => CreateProfile());
+    case Constants.ExpressListPageRoute:
+      return MaterialPageRoute(builder: (context) => ExpressList());
     case Constants.HomePageRoute:
       return MaterialPageRoute(builder: (context) => Home());
     case Constants.SplashScreenRoute:

@@ -59,6 +59,8 @@ class _SignInWithGoogleState extends State<SignInWithGoogle> {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => CreateProfile())
               );
+
+              //if email exists in db move to login screen
             }
           ),
         )
