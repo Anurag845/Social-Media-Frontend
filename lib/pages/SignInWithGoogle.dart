@@ -8,6 +8,8 @@ import 'package:navras/providers/AuthProvider.dart';
 import 'package:navras/utils/Classes.dart';
 import 'package:navras/utils/Constants.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 class SignInWithGoogle extends StatefulWidget {
   @override
@@ -17,11 +19,12 @@ class SignInWithGoogle extends StatefulWidget {
 class _SignInWithGoogleState extends State<SignInWithGoogle> {
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final GoogleSignIn _googlSignIn = new GoogleSignIn();
+  final GoogleSignIn _googleSignIn = new GoogleSignIn();
+  GoogleSignInAccount _googleUser;
 
   _signIn() async {
-    final GoogleSignInAccount googleUser = await _googlSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    _googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth = await _googleUser.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: googleAuth.accessToken,
@@ -43,6 +46,29 @@ class _SignInWithGoogleState extends State<SignInWithGoogle> {
     Provider.of<AuthProvider>(context, listen: false).setGoogleUserModel(googleUserModel);
   }
 
+  _checkIfExists(String email) async {
+    var response = await http.post(
+      "${Constants.SERVER_URL}user/checkIfExists",
+      body: {'email': email}
+    );
+    var jsonResponse = convert.jsonDecode(response.body);
+    bool error = jsonResponse['error'];
+    if(!error) {
+      bool exists = jsonResponse['exists'];
+      print(exists);
+      if(exists) {
+        Navigator.of(context).pushReplacementNamed(
+          Constants.LoginPageRoute
+        );
+      }
+      else {
+        Navigator.of(context).pushReplacementNamed(
+          Constants.CreateProfilePageRoute
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,15 +83,13 @@ class _SignInWithGoogleState extends State<SignInWithGoogle> {
 
               //check if email exists in the db and if it does not ->
 
+              await _checkIfExists(_googleUser.email);
+
               /*Navigator.of(context).pushReplacementNamed(
                 Constants.CreateProfilePageRoute
               );*/
 
               //if email exists in db move to login screen
-
-              Navigator.of(context).pushReplacementNamed(
-                Constants.LoginPageRoute
-              );
 
             }
           ),

@@ -1,15 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:navras/models/GoogleUserModel.dart';
-import 'package:navras/pages/SignInWithGoogle.dart';
 import 'package:navras/utils/Classes.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:navras/models/UserModel.dart';
-import 'package:navras/pages/WelcomePage.dart';
 import 'package:navras/providers/AuthProvider.dart';
 import 'package:navras/providers/Theme_provider.dart';
 import 'package:navras/utils/Constants.dart';
@@ -24,6 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = new GoogleSignIn();
+  BuildContext _buildContext;
 
   @override
   void initState() {
@@ -39,13 +37,16 @@ class _SplashScreenState extends State<SplashScreen> {
   _handleGoogleSignIn() async {
     bool isSignedIn = await _googleSignIn.isSignedIn();
     if(isSignedIn) {
-      final GoogleSignInAccount googleUser = await _googleSignIn
+      /*final GoogleSignInAccount googleUser = await _googleSignIn
         .signInSilently(suppressErrors: false)
-        .catchError((e) {
+        .catchError((e) async {
           print(e.toString());
-        });
+      });*/
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      //final GoogleSignInAccount googleUser = _googleSignIn.currentUser;
+
+      final GoogleSignInAccount _googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth = await _googleUser.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.getCredential(
         accessToken: googleAuth.accessToken,
@@ -59,19 +60,19 @@ class _SplashScreenState extends State<SplashScreen> {
       providerData.add(providerInfo);
 
       GoogleUserModel googleUserModel = GoogleUserModel(
-        userDetails.displayName, userDetails.email, userDetails.photoUrl
+        userDetails.displayName,
+        userDetails.email,
+        userDetails.photoUrl
       );
 
-      //SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        Provider.of<AuthProvider>(context, listen: false).setGoogleUserModel(googleUserModel);
-      //});
+      Provider.of<AuthProvider>(context, listen: false).setGoogleUserModel(googleUserModel);
+
     }
     else {
       //SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => SignInWithGoogle()),
-          (route) => false
-        );
+      Navigator.of(_buildContext).pushReplacementNamed(
+        Constants.GoogleSignInPageRoute
+      );
       //});
     }
   }
@@ -85,15 +86,14 @@ class _SplashScreenState extends State<SplashScreen> {
       startLogin(email, password);
     }
     else {
-
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          Constants.LoginPageRoute, (route) => false
-        );
+      Navigator.of(_buildContext).pushReplacementNamed(
+        Constants.LoginPageRoute,
+      );
     }
   }
 
   void startLogin(String email, String password) async {
-    // check email and password if succ Move to Home if Not Move to WelcomePage
+
     var url = '${Constants.SERVER_URL}user/login';
 
     try {
@@ -105,40 +105,35 @@ class _SplashScreenState extends State<SplashScreen> {
       bool error = jsonResponse['error'];
 
       if (error) {
-
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            Constants.LoginPageRoute, (route) => false
-          );
-
+        Navigator.of(_buildContext).pushReplacementNamed(
+          Constants.LoginPageRoute,
+        );
       }
       else {
         var userData = jsonResponse['data'];
         UserModel myModel = UserModel.fromJson(userData);
-        //make my model usable to all widgets
-        Provider.of<AuthProvider>(context, listen: false).setUserModel(myModel);
 
-        print("Login done - going to Home");
+        Provider.of<AuthProvider>(_buildContext, listen: false).setUserModel(myModel);
 
+        //print("Login done - going to Home");
 
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            Constants.WelcomePageRoute, (route) => false
-          );
-
+        Navigator.of(_buildContext).pushReplacementNamed(
+          Constants.WelcomePageRoute,
+        );
       }
     }
     catch (err) {
-      //case error (No internet connection) move to WelcomePage
 
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          Constants.LoginPageRoute,
-          (Route<dynamic> route) => false
-        );
+      Navigator.of(_buildContext).pushReplacementNamed(
+        Constants.LoginPageRoute,
+      );
 
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    _buildContext = context;
     _handleGoogleSignIn();
     _handleNavrasSignIn();
     return Scaffold(

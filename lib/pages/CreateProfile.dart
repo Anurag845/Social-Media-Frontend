@@ -712,11 +712,8 @@ class _CreateProfileState extends State<CreateProfile> {
                             Fluttertoast.showToast(msg: "Please select gender");
                           }
                           else {
-
-                            //proceed further
-
-                            Navigator.of(context).pushNamed(
-                              Constants.ExpressListPageRoute
+                            Navigator.of(context).pushReplacementNamed(
+                              Constants.WelcomePageRoute
                             );
                           }
                         }
