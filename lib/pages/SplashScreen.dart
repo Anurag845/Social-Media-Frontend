@@ -23,23 +23,28 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
 
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final GoogleSignIn _googlSignIn = new GoogleSignIn();
+  final GoogleSignIn _googleSignIn = new GoogleSignIn();
 
   @override
   void initState() {
     super.initState();
     checkTheme();
     initFilterEffects();
-    Future.delayed(Duration(milliseconds: 2000), () async {
+    /*Future.delayed(Duration(milliseconds: 2000), () async {
       _handleGoogleSignIn();
       _handleNavrasSignIn();
-    });
+    });*/
   }
 
   _handleGoogleSignIn() async {
-    bool isSignedIn = await _googlSignIn.isSignedIn();
+    bool isSignedIn = await _googleSignIn.isSignedIn();
     if(isSignedIn) {
-      final GoogleSignInAccount googleUser = await _googlSignIn.signInSilently();
+      final GoogleSignInAccount googleUser = await _googleSignIn
+        .signInSilently(suppressErrors: false)
+        .catchError((e) {
+          print(e.toString());
+        });
+
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.getCredential(
@@ -57,17 +62,17 @@ class _SplashScreenState extends State<SplashScreen> {
         userDetails.displayName, userDetails.email, userDetails.photoUrl
       );
 
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      //SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         Provider.of<AuthProvider>(context, listen: false).setGoogleUserModel(googleUserModel);
-      });
+      //});
     }
     else {
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      //SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => SignInWithGoogle()),
           (route) => false
         );
-      });
+      //});
     }
   }
 
@@ -80,11 +85,10 @@ class _SplashScreenState extends State<SplashScreen> {
       startLogin(email, password);
     }
     else {
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+
         Navigator.of(context).pushNamedAndRemoveUntil(
-          Constants.WelcomePageRoute, (route) => false
+          Constants.LoginPageRoute, (route) => false
         );
-      });
     }
   }
 
@@ -101,11 +105,11 @@ class _SplashScreenState extends State<SplashScreen> {
       bool error = jsonResponse['error'];
 
       if (error) {
-        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+
           Navigator.of(context).pushNamedAndRemoveUntil(
-            Constants.WelcomePageRoute, (route) => false
+            Constants.LoginPageRoute, (route) => false
           );
-        });
+
       }
       else {
         var userData = jsonResponse['data'];
@@ -115,49 +119,34 @@ class _SplashScreenState extends State<SplashScreen> {
 
         print("Login done - going to Home");
 
-        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+
           Navigator.of(context).pushNamedAndRemoveUntil(
-            Constants.HomePageRoute, (route) => false
+            Constants.WelcomePageRoute, (route) => false
           );
-        });
+
       }
     }
     catch (err) {
       //case error (No internet connection) move to WelcomePage
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => WelcomePage()),
+
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          Constants.LoginPageRoute,
           (Route<dynamic> route) => false
         );
-      });
+
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    //splash screen deign
+    _handleGoogleSignIn();
+    _handleNavrasSignIn();
     return Scaffold(
       backgroundColor: Color(0xff181818),
       body: SafeArea(
         child: Center(
           child: Container(
             height: MediaQuery.of(context).size.height,
-            /*decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Colors.grey.shade200,
-                  offset: Offset(2, 4),
-                  blurRadius: 5,
-                  spreadRadius: 2
-                )
-              ],
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xfffbb448), Color(0xffe46b10)]
-              )
-            ),*/
             color: Colors.white,
             width: MediaQuery.of(context).size.width,
             child: Column(

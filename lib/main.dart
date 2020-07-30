@@ -91,7 +91,7 @@ class MyApp extends StatelessWidget {
       title: 'Navras',
       debugShowCheckedModeBanner: false,
       onGenerateRoute: router.generateRoute,
-      initialRoute: Constants.CreateProfilePageRoute
+      initialRoute: Constants.SplashScreenRoute
     );
   }
 }

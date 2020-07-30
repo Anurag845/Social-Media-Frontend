@@ -6,6 +6,7 @@ import 'package:navras/models/GoogleUserModel.dart';
 import 'package:navras/pages/CreateProfile.dart';
 import 'package:navras/providers/AuthProvider.dart';
 import 'package:navras/utils/Classes.dart';
+import 'package:navras/utils/Constants.dart';
 import 'package:provider/provider.dart';
 
 class SignInWithGoogle extends StatefulWidget {
@@ -56,11 +57,16 @@ class _SignInWithGoogleState extends State<SignInWithGoogle> {
 
               //check if email exists in the db and if it does not ->
 
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => CreateProfile())
-              );
+              /*Navigator.of(context).pushReplacementNamed(
+                Constants.CreateProfilePageRoute
+              );*/
 
               //if email exists in db move to login screen
+
+              Navigator.of(context).pushReplacementNamed(
+                Constants.LoginPageRoute
+              );
+
             }
           ),
         )

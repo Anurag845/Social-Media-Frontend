@@ -332,6 +332,16 @@ class _CreateProfileState extends State<CreateProfile> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _birthplaceController.dispose();
+    _birthdateController.dispose();
+    _birthtimeController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -351,7 +361,7 @@ class _CreateProfileState extends State<CreateProfile> {
                     margin: EdgeInsets.only(top: 94),
                     child: CircleAvatar(
                       radius: 40,
-                      //backgroundImage: NetworkImage(_googleUserModel.photoUrl),
+                      backgroundImage: NetworkImage(_googleUserModel.photoUrl),
                       backgroundColor: Colors.transparent,
                     ),
                   ),
@@ -361,7 +371,7 @@ class _CreateProfileState extends State<CreateProfile> {
                   child: Container(
                     margin: EdgeInsets.only(top: 182),
                     child: Text(
-                      "_googleUserModel.userName",
+                      _googleUserModel.userName,
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
