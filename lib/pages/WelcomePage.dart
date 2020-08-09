@@ -16,13 +16,14 @@ class WelcomePage extends StatefulWidget {
 class _WelcomePageState extends State<WelcomePage> {
 
   //GoogleUserModel _googleUserModel;
-  //UserModel _userModel;
+  UserModel _userModel;
 
   @override
   void initState() {
     super.initState();
     //_googleUserModel = Provider.of<AuthProvider>(context, listen: false).googleUserModel;
     //googleUser = _googleSignIn.currentUser;
+    _userModel = Provider.of<AuthProvider>(context, listen: false).userModel;
   }
 
   @override
@@ -88,7 +89,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     padding: EdgeInsets.all(0),
                     child: CircleAvatar(
                       radius: 25,
-                      backgroundImage: NetworkImage("https://www.macrollc.com/images/easyblog_shared/July_2018/7-4-18/totw_network_profile_400.jpg"),
+                      backgroundImage: NetworkImage(_userModel.img),
                       backgroundColor: Colors.blue,
                     ),
                     //child: GoogleUserCircleAvatar(identity: googleUser),
@@ -97,7 +98,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: Text(
-                        "Welcome, " + "Username", //_googleUserModel.userName,
+                        "Welcome, " + _userModel.displayName,
                         style: TextStyle(
                           fontSize: 18,
                         ),

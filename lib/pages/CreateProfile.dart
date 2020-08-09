@@ -888,10 +888,15 @@ class _CreateProfileState extends State<CreateProfile> {
                     ),
                   ),
                   _registering
-                  ? Container(
-                    alignment: Alignment.centerLeft,
-                    child: CircularProgressIndicator(
-                      backgroundColor: Colors.purple,
+                  ? Padding(
+                    padding: const EdgeInsets.all(40),
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          backgroundColor: Colors.purple,
+                        ),
+                      ),
                     ),
                   )
                   : Padding(

@@ -46,8 +46,8 @@ class _SplashScreenState extends State<SplashScreen> {
         String email = sharedPreferences.getString('email');
         String password = sharedPreferences.getString('password');
 
-        if (email != null && password != null && email == _userDetails.userEmail) {
-          startLogin(email, password);
+        if (email != null && password != null) {
+          await startLogin(email, password);
         }
         else {
 
@@ -67,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  void startLogin(String email, String password) async {
+  startLogin(String email, String password) async {
 
     var url = '${Constants.SERVER_URL}user/login';
 
@@ -96,9 +96,7 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     }
     catch (err) {
-      Navigator.of(_buildContext).pushReplacementNamed(
-        Constants.LoginPageRoute,
-      );
+      print("Error found is " + err);
     }
   }
 
