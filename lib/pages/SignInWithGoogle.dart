@@ -21,6 +21,7 @@ class _SignInWithGoogleState extends State<SignInWithGoogle> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = new GoogleSignIn();
   GoogleSignInAccount _googleUser;
+  UserDetails _userDetails;
 
   _signIn() async {
     _googleUser = await _googleSignIn.signIn();
@@ -37,13 +38,7 @@ class _SignInWithGoogleState extends State<SignInWithGoogle> {
     List<ProviderDetails> providerData = new List<ProviderDetails>();
     providerData.add(providerInfo);
 
-    GoogleUserModel googleUserModel = GoogleUserModel(
-      userDetails.displayName,
-      userDetails.email,
-      userDetails.photoUrl
-    );
-
-    Provider.of<AuthProvider>(context, listen: false).setGoogleUserModel(googleUserModel);
+    _userDetails = UserDetails(userDetails.photoUrl,userDetails.email,userDetails.displayName);
   }
 
   _checkIfExists(String email) async {
@@ -63,7 +58,7 @@ class _SignInWithGoogleState extends State<SignInWithGoogle> {
       }
       else {
         Navigator.of(context).pushReplacementNamed(
-          Constants.CreateProfilePageRoute
+          Constants.CreateProfilePageRoute, arguments: _userDetails
         );
       }
     }
@@ -81,16 +76,7 @@ class _SignInWithGoogleState extends State<SignInWithGoogle> {
             onPressed: () async {
               await _signIn();
 
-              //check if email exists in the db and if it does not ->
-
               await _checkIfExists(_googleUser.email);
-
-              /*Navigator.of(context).pushReplacementNamed(
-                Constants.CreateProfilePageRoute
-              );*/
-
-              //if email exists in db move to login screen
-
             }
           ),
         )

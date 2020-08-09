@@ -13,17 +13,17 @@ class AuthProvider with ChangeNotifier {
 
   UserModel get userModel => _userModel;
 
-  GoogleUserModel get googleUserModel => _googleUserModel;
+  //GoogleUserModel get googleUserModel => _googleUserModel;
 
   setUserModel(UserModel value) {
     _userModel = value;
     notifyListeners();
   }
 
-  setGoogleUserModel(GoogleUserModel model) {
+  /*setGoogleUserModel(GoogleUserModel model) {
     _googleUserModel = model;
     notifyListeners();
-  }
+  }*/
 
   void updateImg(String img) {
     _userModel.img = img;

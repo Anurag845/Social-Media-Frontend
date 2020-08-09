@@ -296,39 +296,62 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 }*/
 
+import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:navras/models/GoogleUserModel.dart';
+import 'package:navras/models/UserModel.dart';
 import 'package:navras/pages/ExpressList.dart';
 import 'package:navras/providers/AuthProvider.dart';
+import 'package:navras/utils/Classes.dart';
 import 'package:navras/utils/Constants.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateProfile extends StatefulWidget {
+  final UserDetails googleUser;
+
+  CreateProfile(this.googleUser);
+
   @override
   _CreateProfileState createState() => _CreateProfileState();
 }
 
 class _CreateProfileState extends State<CreateProfile> {
 
-  GoogleUserModel _googleUserModel;
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _firstNameController = TextEditingController();
+  TextEditingController _lastNameController = TextEditingController();
+  TextEditingController _displayNameController = TextEditingController();
   TextEditingController _birthplaceController = TextEditingController();
   TextEditingController _birthdateController = TextEditingController();
   TextEditingController _birthtimeController = TextEditingController();
   String _genderValue;
   DateTime _birthDate;
+  String _timeZone = 'Early Morning';
   TimeOfDay _birthTime;
+
+  Map<String,String> _timeMap = {
+    'Early Morning': '05:00',
+    'Morning': '09:00',
+    'Afternoon': '13:00',
+    'Evening': '17:00',
+    'Night': '21:00',
+    'Late Night': '01:00'
+  };
 
   bool passwordVisible = true;
   final _formKey = GlobalKey<FormState>();
 
+  bool _registering = false;
+
   @override
   void initState() {
     super.initState();
-    _googleUserModel = Provider.of<AuthProvider>(context, listen: false).googleUserModel;
   }
 
   @override
@@ -336,6 +359,9 @@ class _CreateProfileState extends State<CreateProfile> {
     super.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _displayNameController.dispose();
     _birthplaceController.dispose();
     _birthdateController.dispose();
     _birthtimeController.dispose();
@@ -361,7 +387,7 @@ class _CreateProfileState extends State<CreateProfile> {
                     margin: EdgeInsets.only(top: 94),
                     child: CircleAvatar(
                       radius: 40,
-                      backgroundImage: NetworkImage(_googleUserModel.photoUrl),
+                      backgroundImage: NetworkImage(widget.googleUser.photoUrl),
                       backgroundColor: Colors.transparent,
                     ),
                   ),
@@ -371,7 +397,9 @@ class _CreateProfileState extends State<CreateProfile> {
                   child: Container(
                     margin: EdgeInsets.only(top: 182),
                     child: Text(
-                      _googleUserModel.userName,
+                      //"Username",
+                      //_googleUserModel.userName,
+                      widget.googleUser.displayName,
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -500,6 +528,132 @@ class _CreateProfileState extends State<CreateProfile> {
                           width: MediaQuery.of(context).size.width/3-8,
                           padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
                           child: Text(
+                            "First Name",
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                        Container(
+                          width: 2*MediaQuery.of(context).size.width/3-30,
+                          child: TextFormField(
+                            controller: _firstNameController,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.black, width: 0.0),
+                              ),
+                              hintText: "First Name"
+                            ),
+                            validator: (value) {
+                              if(value.isEmpty) {
+                                return "Please enter your first name";
+                              }
+                              else {
+                                return null;
+                              }
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width/3-8,
+                          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          child: Text(
+                            "Last Name",
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                        Container(
+                          width: 2*MediaQuery.of(context).size.width/3-30,
+                          child: TextFormField(
+                            controller: _lastNameController,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.black, width: 0.0),
+                              ),
+                              hintText: "Last Name"
+                            ),
+                            validator: (value) {
+                              if(value.isEmpty) {
+                                return "Please enter your last name";
+                              }
+                              else {
+                                return null;
+                              }
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width/3-8,
+                          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          child: Text(
+                            "Last Name",
+                            overflow: TextOverflow.fade,
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                        Container(
+                          width: 2*MediaQuery.of(context).size.width/3-30,
+                          child: TextFormField(
+                            controller: _displayNameController,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.grey, width: 0.0),
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: const BorderSide(color: Colors.black, width: 0.0),
+                              ),
+                              hintText: "Display Name"
+                            ),
+                            validator: (value) {
+                              if(value.isEmpty) {
+                                return "Please enter your display name";
+                              }
+                              else {
+                                return null;
+                              }
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width/3-8,
+                          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          child: Text(
                             "I am a",
                             overflow: TextOverflow.fade,
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -558,6 +712,7 @@ class _CreateProfileState extends State<CreateProfile> {
                           width: 2*MediaQuery.of(context).size.width/3-30,
                           child: TextFormField(
                             controller: _birthplaceController,
+                            textCapitalization: TextCapitalization.words,
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.fromLTRB(5, 0, 5, 0),
                               enabledBorder: const UnderlineInputBorder(
@@ -662,6 +817,39 @@ class _CreateProfileState extends State<CreateProfile> {
                         ),
                         Container(
                           width: 2*MediaQuery.of(context).size.width/3-30,
+                          child: DropdownButton<String>(
+                            value: _timeZone,
+                            items: <String>['Early Morning', 'Morning', 'Afternoon', 'Evening',
+                              'Night', 'Late Night']
+                              .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _timeZone = value;
+                                _birthtimeController.text = _timeMap[value];
+                              });
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width/3-8,
+                          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          //child:
+                        ),
+                        Container(
+                          width: 2*MediaQuery.of(context).size.width/3-30,
                           child: TextFormField(
                             controller: _birthtimeController,
                             readOnly: true,
@@ -699,22 +887,33 @@ class _CreateProfileState extends State<CreateProfile> {
                       ],
                     ),
                   ),
-                  Padding(
+                  _registering
+                  ? Container(
+                    alignment: Alignment.centerLeft,
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.purple,
+                    ),
+                  )
+                  : Padding(
                     padding: const EdgeInsets.all(40),
                     child: RaisedButton(
                       shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0),
                       ),
                       color: Colors.purple,
-                      onPressed: () {
+                      onPressed: () async {
                         if(_formKey.currentState.validate()) {
                           if(_genderValue == null) {
                             Fluttertoast.showToast(msg: "Please select gender");
                           }
                           else {
-                            Navigator.of(context).pushReplacementNamed(
-                              Constants.WelcomePageRoute
-                            );
+                            setState(() {
+                              _registering = true;
+                            });
+                            //perform user registration
+                            await _register();
+                            //perform user login
+                            await _login(widget.googleUser.userEmail, _passwordController.text.trim());
                           }
                         }
                       },
@@ -737,5 +936,117 @@ class _CreateProfileState extends State<CreateProfile> {
         )
       )
     );
+  }
+
+  _register() async {
+    try {
+      var response = await http.post(
+        '${Constants.SERVER_URL}user/create',
+        body: {
+          'email': widget.googleUser.userEmail,
+          'username': _usernameController.text.trim(),
+          'password': _passwordController.text.trim(),
+          'firstname': _firstNameController.text.trim(),
+          'lastname': _lastNameController.text.trim(),
+          'displayname': _displayNameController.text.trim(),
+          'gender': _genderValue,
+          'birthplace': _birthplaceController.text.trim(),
+          'birthdate': _birthdateController.text.trim(),
+          'birthtime': _birthtimeController.text.trim(),
+          'profile_pic': widget.googleUser.photoUrl
+        }
+      );
+      var jsonResponse = convert.jsonDecode(response.body);
+      bool error = jsonResponse['error'];
+      if(!error) {
+        var userData = jsonResponse['data'];
+        UserModel myModel = UserModel.fromJson(userData);
+
+        Provider.of<AuthProvider>(context, listen: false).setUserModel(myModel);
+
+        saveData(
+          myModel.userId, myModel.username, myModel.email, _passwordController.text.trim()
+        );
+      }
+      else {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('${jsonResponse['data']}'),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('close')
+                )
+              ],
+            );
+          }
+        );
+      }
+    }
+    catch(err) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Check your internet connection'),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('close')
+              )
+            ],
+          );
+        }
+      );
+    }
+  }
+
+  _login(String email, String password) async {
+
+    var url = '${Constants.SERVER_URL}user/login';
+
+    try {
+      var response = await http.post(
+        url,
+        body: {'email': email, 'password': password},
+      );
+      var jsonResponse = await convert.jsonDecode(response.body);
+      bool error = jsonResponse['error'];
+
+      if (error) {
+        Navigator.of(context).pushReplacementNamed(
+          Constants.LoginPageRoute,
+        );
+      }
+      else {
+        var userData = jsonResponse['data'];
+        UserModel myModel = UserModel.fromJson(userData);
+
+        Provider.of<AuthProvider>(context, listen: false).setUserModel(myModel);
+
+        Navigator.of(context).pushReplacementNamed(
+          Constants.WelcomePageRoute,
+        );
+      }
+    }
+    catch (err) {
+      Navigator.of(context).pushReplacementNamed(
+        Constants.LoginPageRoute,
+      );
+    }
+  }
+
+  void saveData(String id, String name, String email, password) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString('user_id', id);
+    sharedPreferences.setString('username', name);
+    sharedPreferences.setString('email', email);
+    sharedPreferences.setString('password', password);
   }
 }

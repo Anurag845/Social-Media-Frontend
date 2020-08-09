@@ -23,7 +23,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case Constants.GoogleSignInPageRoute:
       return MaterialPageRoute(builder: (context) => SignInWithGoogle());
     case Constants.CreateProfilePageRoute:
-      return MaterialPageRoute(builder: (context) => CreateProfile());
+      final UserDetails args = settings.arguments;
+      return MaterialPageRoute(builder: (context) => CreateProfile(args));
     case Constants.ExpressListPageRoute:
       return MaterialPageRoute(builder: (context) => ExpressList());
     case Constants.HomePageRoute:

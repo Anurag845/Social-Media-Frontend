@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:navras/customAppBars/HomeAppBar.dart';
 import 'package:navras/models/GoogleUserModel.dart';
+import 'package:navras/models/UserModel.dart';
 import 'package:navras/providers/AuthProvider.dart';
 import 'package:navras/utils/Constants.dart';
 import 'package:provider/provider.dart';
@@ -14,12 +15,13 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> {
 
-  GoogleUserModel _googleUserModel;
+  //GoogleUserModel _googleUserModel;
+  //UserModel _userModel;
 
   @override
   void initState() {
     super.initState();
-    _googleUserModel = Provider.of<AuthProvider>(context, listen: false).googleUserModel;
+    //_googleUserModel = Provider.of<AuthProvider>(context, listen: false).googleUserModel;
     //googleUser = _googleSignIn.currentUser;
   }
 
@@ -86,7 +88,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     padding: EdgeInsets.all(0),
                     child: CircleAvatar(
                       radius: 25,
-                      backgroundImage: NetworkImage(_googleUserModel.photoUrl),
+                      backgroundImage: NetworkImage("https://www.macrollc.com/images/easyblog_shared/July_2018/7-4-18/totw_network_profile_400.jpg"),
                       backgroundColor: Colors.blue,
                     ),
                     //child: GoogleUserCircleAvatar(identity: googleUser),
@@ -95,7 +97,7 @@ class _WelcomePageState extends State<WelcomePage> {
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                       child: Text(
-                        "Welcome, " + _googleUserModel.userName,
+                        "Welcome, " + "Username", //_googleUserModel.userName,
                         style: TextStyle(
                           fontSize: 18,
                         ),
